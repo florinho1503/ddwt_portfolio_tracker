@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Movies{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li> Stockwatch</li>
+    </ul>
+
+
+    <div class="row1">
+        <div class="stockwatch">
+            <a href="index.html">
+                <h1>S&P 500 Rises to New Record to Close Out Monster First Quarter</h1>
+            </a>
+        </div>
+
+        <div class="col-9">
+            <iframe height="450" width="350" src="https://ssltvc.investing.com/?pair_ID=6408&height=400&width=375&interval=300&plotStyle=line&domain_ID=1&lang_ID=1&timezone_ID=14"></iframe>        </div>
+    </div>
+
+    <!-- Widget containing stock information -->
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+            {
+                "symbols": [
+                {
+                    "proName": "FOREXCOM:SPXUSD",
+                    "title": "S&P 500 Index"
+                },
+                {
+                    "proName": "FOREXCOM:NSXUSD",
+                    "title": "US 100 Cash CFD"
+                },
+                {
+                    "proName": "FX_IDC:EURUSD",
+                    "title": "EUR to USD"
+                },
+                {
+                    "proName": "BITSTAMP:BTCUSD",
+                    "title": "Bitcoin"
+                },
+                {
+                    "proName": "BITSTAMP:ETHUSD",
+                    "title": "Ethereum"
+                }
+            ],
+                "isTransparent": false,
+                "showSymbolLogo": true,
+                "colorTheme": "light",
+                "locale": "en"
+            }
+        </script>
+    </div>
+
+    <!-- Short Reads -->
+    <div class="row2">
+        <div class="col-7">
+            <a href="index.html">
+                <h2>The Magnificent 7 are no longer the only stocks driving S&P 500 to record highs</h2>
+                <p>More stocks joined in the rally during the first quarter, helping to compensate for some weakness in Big Tech. This suggests the rally will continue, analysts say.
+                </p>
+            </a>
+        </div>
+        <div class="col-7">
+            <a href="index.html">
+                <h2>Disney steels for April 3 shareholder showdown with activist investors
+                </h2>
+                <p>Rest assured, Walt Disney Co.’s annual shareholders meeting next week will not be the happiest place on earth.
+                </p>
+            </a>
+        </div>
+        <div class="col-7">
+            <a href="index.html">
+                <h2>Why good news for Japan may be bad news for hedge funds
+                </h2>
+                <p>After three decades of corporate stagnation, there’s fresh momentum — but not everyone is pleased
+                </p>
+            </a>
+        </div>
+    </div>
+    <div class="row3">
+        <div class="col-3">
+            <!-- Widget containing stock information -->
+            <div class="tradingview-widget-container" style="height:100%;width:100%">
+                <div class="tradingview-widget-container__widget" style="height:calc(100% - 15px);width:100%"></div>
+                <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                        "autosize": true,
+                        "symbol": "NASDAQ:AAPL",
+                        "interval": "D",
+                        "timezone": "Etc/UTC",
+                        "theme": "light",
+                        "style": "1",
+                        "locale": "en",
+                        "enable_publishing": false,
+                        "allow_symbol_change": true,
+                        "calendar": false,
+                        "support_host": "https://www.tradingview.com"
+                    }
+                </script>
+            </div>
+        </div>
+        <div class="col-3">
+            <!-- Widget that contains stock information -->
+            <div class="tradingview-widget-container" style="height:100%;width:100%">
+                <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                        "autosize": true,
+                        "symbol": "NASDAQ:AAPL",
+                        "interval": "D",
+                        "timezone": "Etc/UTC",
+                        "theme": "light",
+                        "style": "1",
+                        "locale": "en",
+                        "enable_publishing": false,
+                        "allow_symbol_change": true,
+                        "calendar": false,
+                        "support_host": "https://www.tradingview.com"
+                    }
+                </script>
+            </div>
+            <!-- TradingView Widget END -->
+        </div>
+    </div>
+{% endblock %}

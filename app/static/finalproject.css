@@ -1,0 +1,694 @@
+/* CSS file for final project */
+body {
+    /* Setting the standard font to Source Sans Pro */
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #f9f9f9;
+}
+@media screen and (max-width: 767.98px) {
+    /* Responsiveness for screens with the size of a phone */
+    /* Making sure the title has enough padding underneath */
+    .col-12{
+        padding-bottom: 20px;
+    }
+    .row1 {
+        flex-direction: column;
+    }
+    /* When using a phone, these columns will appear vertically and on 100% width because otherwise the site is not readable*/
+    .row1 .col-3,
+    .col2-container{
+        flex: 1;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .row2 .col-7 {
+        flex: 1;
+        width: 100%;
+        max-width: none;
+        margin-bottom: 20px;
+    }
+
+    .col-1,
+    .col-3,
+    .col-7 {
+        padding: 10px;
+    }
+
+    .column h1,
+    .column h2,
+    .column p {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .row2 .column {
+        padding: 10px;
+    }
+
+    .row3 .column {
+        flex: 1;
+        width: 100%;
+    }
+
+    .footer {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .footer-content {
+        width: 100%;
+        text-align: center;
+    }
+
+    .links {
+        margin-bottom: 20px;
+    }
+
+    .contact-info {
+        margin-bottom: 20px;
+    }
+
+    .footer .links a {
+        display: block;
+        margin: 10px 0;
+    }
+
+    .row2 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .col-7 {
+        width: 100%;
+    }
+
+    .longreadtext img {
+        max-width: 200px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1100px) {
+    /* The responsiveness for tablets */
+    /* Also making certain columns have 100% width here too, so that it appears vertically aligned. */
+    .row2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .col-7 {
+        width: 100%;
+    }
+
+    .col2-container{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .list{
+        width: 100%;
+    }
+
+    .row1 {
+        flex-direction: column;
+    }
+
+    .row1 .col-3,
+    .col2-container{
+        flex: 1;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .longreadtext img {
+        max-width: 200px;
+        height: auto;
+    }
+
+}
+
+@media (min-width: 768px) {
+    .container {
+        margin: 0 auto;
+        flex-shrink: 1;
+        max-width: 1400px;
+    }
+
+    .column {
+        padding: 10px;
+        margin-bottom: 30px;
+        display: flex;
+        background-color: white;
+        color: #2F3020;
+        flex-wrap: wrap;
+    }
+}
+
+.column {
+    flex: 1 0 100%;
+}
+
+
+.column h1,
+.column h2,
+.column p {
+    margin-left: 25px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1400px;
+    flex: 0 1 calc(100% - 10px);
+}
+
+
+.row1 {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+/* Using grafiek.jpg as background image so that I can put the title of the article in front */
+.row1 .col-1 {
+    background-image: url('images/grafiek.jpg');
+    padding: 20px;
+    box-sizing: border-box;
+    height: 500px;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color:white;
+}
+/* Same for this one */
+.row1 .stockwatch {
+    background-image: url('images/stockmarket.jpg');
+    padding: 20px;
+    box-sizing: border-box;
+    height: 500px;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.row2 {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.row3 {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.row3 a {
+    color: black;
+    text-decoration: none;
+}
+/* I use flex for the columns, because it works simple */
+.row3 .col-3 {
+    flex: 0 1 calc(50% - 10px);
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 300px;
+}
+
+
+.row3 .col-4 {
+    flex: 0 1 calc(50% - 10px);
+    height: 300px;
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+}
+/* No underlining for the links */
+.col-1 a,
+.col-2 a,
+.col-7 a,
+.stockwatch a{
+    text-decoration: none;
+}
+
+.col-1 a,
+.stockwatch a{
+    color: white;
+}
+
+.col-2 a,
+.col-7 a {
+    color: black;
+}
+
+.col2-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 1 calc(28% - 10px);
+}
+
+.row1 .col-2 {
+    height: 500px;
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    flex-direction: column;
+    display:flex;
+}
+
+.row1 .col-3 {
+    flex: 0 1 calc(18% - 10px);
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 500px;
+    justify-content: center;
+
+}
+
+.col-3 h1 {
+    color: white;
+}
+
+.col-3 img {
+    display:flex;
+    width: 100%;
+    height: auto;
+}
+
+.col-5 {
+    flex 0 1 calc(100% - 10px);
+    background-color: white;
+    display: flex;
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+    justify-content: center;
+}
+
+.col-7 {
+    flex: 0 1 calc(33% - 10px);
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.row1 .col-9 {
+    flex: 0 1 calc(30% - 10px);
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 500px;
+    justify-content: center;
+    position: relative;
+}
+/* Gave the title column different font, makes the site a bit more interesting and the title font also looks like something you would see in a newspaper */
+.col-12 {display: flex; flex: 0 1 calc(100% - 10px);margin-bottom: 1px;align-content: center; font-family:"Bodoni MT"; background-color: white;color: black;justify-content: center;height: 50px;}
+
+.col-12 a{
+    text-decoration: none;
+    color:black;
+}
+/* For the articles on the homepage */
+.syngenta {
+    background-image: url('images/syngenta.jpg');
+}
+
+.tesla {
+    background-image: url('images/teslaa.jpg');
+}
+
+.europa {
+    background-image: url("images/europapa.jpeg");
+}
+
+.shein {
+    background-image: url("images/shein.jpg");
+}
+
+.syngenta,
+.tesla,
+.europa,
+.shein{
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.title {font-family:"Bodoni MT";}
+
+/* For the stock information that you see under the navigation, looks pretty nice and quite common on financial sites*/
+.stockoverview {
+    display: flex;
+    justify-content: center;
+    flex: 0 1 calc(40% - 10px);
+    background-color: white;
+    color: black;
+    text-align: center;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 40px;
+    font-size: 14px;
+}
+
+.stockoverview marquee {
+    background-color: white;
+    flex: 0 1 calc(50% - 10px);
+    margin: 0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+}
+/* CSS for the navigation bar */
+.navbar {
+    flex: 0 1 calc(100% - 10px);
+    position: relative;
+    z-index: 999;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background: navy;
+}
+
+.navbar li {
+    display: inline-block;
+}
+
+.navbar li a {
+    color: white;
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.navbar ul ul {
+    position: absolute;
+    top: 100%;
+    display: none;
+}
+
+.navbar ul ul li {
+    display: block;
+}
+/* Designing the colors of the navigation tab when active or hovering */
+.navbar ul li a.active{
+    background-color: red;
+    color: white;
+    border: 2px #B99976;
+}
+
+.navbar li:hover ul {
+    display: block;
+}
+
+.navbar ul ul li a:hover {
+    background-color: lightgrey;
+    color: navy;
+}
+
+.sidenav {
+    background-color: red;
+    color: white;
+    display: flex;
+}
+
+.list {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.list img {
+    width: 100%;
+    height: 80px;
+}
+
+header .column img {
+    height: auto;
+    border: 5px solid transparent;
+    box-shadow: 0 0 10px rgba(240, 240, 240, 0.5); }
+
+/* CSS for the breadcrumbs on every page */
+.breadcrumb-column {
+    background-color: white;
+    color: black;
+    height: 10px;
+    justify-content: center;
+    align-content: center;
+}
+
+ul.breadcrumb {
+    list-style: none;;
+}
+
+ul.breadcrumb li {
+    display: inline;
+    font-size: 16px;
+}
+
+ul.breadcrumb li+li:before {
+    color: black;
+    content: "/\00a0";
+}
+
+ul.breadcrumb li a {
+    color: navy;
+    text-decoration: none;
+}
+
+ul.breadcrumb li a:hover {
+    color: midnightblue;
+    text-decoration: underline;
+}
+
+.longreadpage {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-family: "Palatino Linotype";
+}
+
+.longreadtext{
+    font-size: 20px;
+    font-family: "Palatino Linotype";
+}
+
+.float-left {
+    float: left;
+    margin-right: 20px;
+}
+
+.long {
+    flex: 0 1 calc(75% - 10px);
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 70%;
+}
+
+.video-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.video-row {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+video {
+    flex: 1;
+    margin-right: 10px;
+    max-width: calc(50% - 5px);
+}
+
+video:last-child {
+    margin-right: 0;
+}
+
+/* Links in the articles are lightblue without underlining */
+
+.longread a,
+.longreadtext a{
+    color: #258DC1;
+    text-decoration: none;}
+
+.longreadpage .long2 .longreadtext video {
+    display: block;
+    margin: 0 auto;
+}
+
+.long2 {
+    flex: 0 1 calc(75% - 10px);
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 70%;
+}
+.weather {
+    display: flex;
+    height: 100px;
+    background-color: white;
+    box-sizing: border-box;
+    flex: 0 1 calc(50% - 10px);
+    margin-bottom: 10px;
+    padding-left: 50px;
+    padding-top: 20px;
+    justify-content: center;
+}
+
+
+.heading-3 {
+    font-size: 20px;
+    text-transform: uppercase;
+    color: crimson;
+    margin-bottom: 10px;
+}
+
+/* Creating the footer */
+.footer {
+    flex: 0 1 calc(100% - 10px);
+    background-color: navy;
+    display: flex;
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+    justify-content: center;
+}
+
+.footer-content {
+    width: inherit;
+    color: white;
+}
+
+.links {
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.maps {
+    display: flex;
+    justify-content: center;
+}
+
+/* The form on the contact page */
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid black;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Styling the submit button*/
+input[type="submit"] {
+    background-color: red;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: navy;
+}
+
+.links a {
+    margin-left: 40px;
+    color: white;
+    text-decoration: none;
+}
+
+.contact-info p {
+    margin: 5px 0;
+}
+
+/* Side navigation in homepage*/
+
+.nav2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.nav2 ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav2 li {
+    display: block;
+    margin-bottom: 10px;
+}
+
+
+.nav2 a {
+    display: block;
+    padding: 10px 20px;
+    color: black;
+    text-decoration: none;
+    background-color: lightgray;
+    transition: all 0.3s ease;
+}
+
+.nav2 a:hover {
+    font-weight: bold;
+}
+
+/* Blockquotes */
+
+blockquote {
+    font-family: 'Merriweather', serif;
+    font-weight: normal;
+    font-style: italic;
+    quotes: "“" "”";
+    padding: 10px;
+    border-left: 4px solid #ccc;
+    display: flex;
+    justify-content: center;
+    max-width: 78%;
+    margin: 0 auto;
+}
+
+blockquote p{
+    font-family: 'Merriweather', serif;
+    font-weight:bold;
+    font-style: normal;
+    margin: 0;
+    display: inline;
+}

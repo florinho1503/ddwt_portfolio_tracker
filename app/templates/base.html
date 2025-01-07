@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Economic</title>
+    <link href="{{ url_for('static', filename='finalproject.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="column col-12">
+                    <h1><em><a href="{{ url_for('index') }}">Daily Economic</a></em></h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <ul>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('stockwatch') }}">Stockwatch</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>              
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+    <div class="column stockoverview">
+        <marquee direction="left" scrollamount="8"loop="infinite">
+            SPTFY -2.02% | CAF +1.43% | CDD +2.23% | DOW +1.93% | MDYA -1,35% | BCR -2.02% | ADFS +1.43% | TSLA +2.23% | ASML +1.93% | META -1,35% | NASDAQ +1.45% | EUR/USD +0.49% | NASDAQ: AMZN -2.34% | ADFE +1,23% | HRFD +3.12% % | BWWF -2.02% | GSEA +1.43% | AEX +2.23% | YEDD +1.93% | JHR -1,35% | NASDAQ +1.45%
+        </marquee>
+    </div>
+    <!-- Main Content Section -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="links">
+                <a href="{{ url_for('about') }}">About</a>
+            </div>
+            <div class="contact-info">
+                <p>Created by Julius van den Brekel, Reinout Vrielink and Floris Bokx</p>
+                <p>Institution: University of Groningen</p>
+                <p>Course: Database Driven Webtechnology</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
