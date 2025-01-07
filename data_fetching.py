@@ -6,10 +6,7 @@ def fetch_historical_data(stock_ticker):
     """Function to get historical price data of a stock (wij gebruiken alleen open/close)"""
     stock = yf.Ticker(stock_ticker)
     data = stock.history(period="1y")  # Adjust period as needed
-    print(data)
     return data[['Close']]  # Return closing prices
-
-fetch_historical_data("ADYEN.AS")
 
 
 def get_live_price(stock_ticker):
@@ -25,13 +22,5 @@ def get_live_price(stock_ticker):
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.content, "html.parser")
     price_tag = soup.find("fin-streamer", {"data-field": "regularMarketPrice"})
-    price = price_tag.text.replace(",", "")
+    price = float(price_tag.text.replace(",", ""))
     return price
-
-
-# Example usage
-price = get_live_price('ADYEN.AS')
-print(price)
-
-
-
