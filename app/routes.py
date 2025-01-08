@@ -7,7 +7,7 @@ from app.forms import LoginForm, RegistrationForm
 # Reinout Vrielink - S5703166
 # Index/Home page
 @app.route('/', methods=['GET'])
-@login_required # You get to the index after logging in
+# You don't have to log in for the home page, only for the portfolio tracker
 def index():
     """Display the list of movies."""
     movies = Movie.query.all()
@@ -115,8 +115,7 @@ def page_not_found(e):
     """Custom 404 error handler."""
     return render_template('404.html'), 404
 
-@app.route('/stockwatch')
-@login_required 
+@app.route('/stockwatch') 
 def stockwatch():
     return render_template('stockwatch.html')
 """
@@ -126,6 +125,10 @@ def videos():
 """
 
 @app.route('/about')
-@login_required
 def about():
     return render_template('about.html')
+
+@app.route('/portfolio_tracker')
+@login_required
+def portfolio_tracker():
+    return render_template('portfolio_tracker.html')

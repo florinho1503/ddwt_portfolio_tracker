@@ -3,7 +3,7 @@
 {% block title %}Movies{% endblock %}
 
 {% block content %}
-
+    <!-- The layout and the way we handled the responsiveness of the website was inspired by the layouts of our websites we made in the course webtechnology.-->
     <div class="row1">
         <div class="col-1">
             <a href="index.html">
@@ -15,13 +15,13 @@
             <nav class="nav2">
                 <p>Categories:</p>
                 <ul>
-                    <li><a href="index.html">Portfolio</a></li>
-                    <li><a href="index.html">News</a></li>
                     <li><a href="{{ url_for('stockwatch') }}">Stockwatch</a></li>
+                    <li><a href="{{ url_for('portfolio_tracker') }}">Portfolio</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
                 </ul>
             </nav>
             <!-- Advertisement -->
-            <img src="images/ad.jpg" alt="Advertisement" style="max-width: 200px;">
+            <img src="../static/images/ad.jpg" alt="Advertisement" style="max-width: 200px;">
             <br>
         </div>
         <!-- Latest News Short Reads -->
@@ -29,27 +29,27 @@
             <div class="column col-2">
                 <h3 class="heading-3">Latest News</h3>
                 <div class="lists">
-                    <a href="index.html">
+                    <a href="https://www.wsj.com/economy/housing/surge-in-home-prices-draws-eager-house-flippers-2836fe46">
                     <div class="list">
-                        <img src="images/huis.jpg" alt="photo 1">
+                        <img src="../static/images/huis.jpg" alt="photo 1">
                         <p>Surge in Home Prices Draws Eager House Flippers</p>
                     </div>
                     </a>
-                    <a href="index.html">
+                    <a href="https://www.reuters.com/markets/europe/german-business-sentiment-rises-october-says-ifo-2024-10-25/">
                     <div class="list">
-                        <img src="images/german.jpg" alt="photo 2">
+                        <img src="../static/images/german.jpg" alt="photo 2">
                         <p>German Business Mood Improves on Hopes for Economy</p>
                     </div>
                     </a>
-                    <a href="index.html">
+                    <a href="https://www.wsj.com/economy/consumers/grocery-prices-inflation-coffee-milk-903aead6">
                     <div class="list">
-                        <img src="images/money.jpg" alt="photo 3">
+                        <img src="../static/images/money.jpg" alt="photo 3">
                         <p>We Still Don't Believe How Much Things Cost</p>
                     </div>
                     </a>
-                    <a href="index.html">
+                    <a href="https://www.wsj.com/finance/stocks/super-micros-ai-boom-carries-a-big-price-tag-6f3c79cf">
                     <div class="list">
-                        <img src="images/micro.jpg" alt="photo 4">
+                        <img src="../static/images/micro.jpg" alt="photo 4">
                         <p>Super Micro's AI Boom Carries a Big Price Tag</p>
                     </div>
                     </a>
@@ -60,13 +60,13 @@
     <!-- Short reads without background pictures -->
     <div class="row2">
         <div class="column col-7">
-            <a href="index.html">
+            <a href="https://www.wsj.com/economy/consumers/uk-confirmed-in-recession-at-end-of-2023-6fde462d">
                 <h2>UK Confirmed in Recession at End of 2023</h2>
                 <p>The GDP data shows the UK was the only G-7 nation to have suffered a recession at the end of last year</p>
             </a>
         </div>
         <div class="column col-7">
-            <a href="index.html">
+            <a href="https://www.wsj.com/economy/central-banking/canada-gdp-grows-stronger-than-expected-0-6-in-january-a8755b07">
                 <h2>Canada GDP Grows Stronger-Than-Expected 0.6% in January
                 </h2>
                 <p>Data reinforces expectations the Bank of Canada will once again stick to the sidelines at its coming policy meeting
@@ -74,7 +74,7 @@
             </a>
         </div>
         <div class="column col-7">
-            <a href="index.html">
+            <a href="https://www.wsj.com/economy/trade/singapores-non-oil-domestic-exports-unexpectedly-fell-in-february-4105ebd3">
             <h2>Singapore Exports Drop, But Data Still Show Signs of Recovery
             </h2>
             <p>February’s reading marks a reversal from the return to growth seen the prior month
@@ -86,12 +86,12 @@
     <div class="row3">
     <div class="column col-3">
         <a href="https://www.rug.nl/">
-            <img src="images/rug.png" alt="Article 3">
+            <img src="../static/images/rug.png" alt="Article 3">
         </a>
     </div>
     <div class="column col-3">
         <a href="https://www.braze.com/">
-            <img src="images/braze.png" alt="Article 3">
+            <img src="../static/images/braze.png" alt="Article 3">
         </a>
     </div>
     </div>
@@ -99,12 +99,12 @@
     <!-- Long reads with background pictures -->
     <div class="row3">
         <div class="column col-3 syngenta">
-            <a href="index.html">
+            <a href="https://www.wsj.com/finance/agricultural-giant-syngenta-withdraws-ipo-application-in-china-1e22a6a8">
                 <h1>Agricultural Giant Syngenta Withdraws IPO Application in China</h1>
             </a>
         </div>
         <div class="column col-3 tesla">
-            <a href="index.html">
+            <a href="https://www.wsj.com/business/autos/teslas-terrible-quarter-catches-some-analysts-asleep-at-the-wheel-a76cb902">
                 <h1>Tesla's Terrible Quarter Catches Some Analysts Asleep at the Wheel</h1>
             </a>
         </div>
@@ -112,12 +112,12 @@
 
     <div class="row3">
         <div class="column col-3 europa">
-            <a href="index.html">
+            <a href="https://www.wsj.com/economy/global/eurozone-activity-nears-recovery-despite-ailing-industry-7b705af4">
                 <h1>Eurozone Activity Nears Recovery Despite Ailing Industry</h1>
             </a>
         </div>
         <div class="column col-3 shein">
-            <a href="index.html">
+            <a href="https://ft.com/content/702223df-2e52-4e62-8f7c-93695a100d9b">
                 <h1>Shein profits double to over $2bn ahead of planned listing</h1>
             </a>
         </div>

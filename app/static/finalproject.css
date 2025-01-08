@@ -312,7 +312,7 @@ body {
     position: relative;
 }
 /* Gave the title column different font, makes the site a bit more interesting and the title font also looks like something you would see in a newspaper */
-.col-12 {display: flex; flex: 0 1 calc(100% - 10px);margin-bottom: 1px;align-content: center; font-family:"Bodoni MT"; background-color: white;color: black;justify-content: center;height: 50px;}
+.col-12 {display: flex; flex: 0 1 calc(100% - 10px);margin-bottom: 1px;align-content: center; font-family: 'Merriweather', 'Georgia', serif; background-color: white;color: black;justify-content: center;height: 50px;}
 
 .col-12 a{
     text-decoration: none;
@@ -384,7 +384,7 @@ body {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    background: navy;
+    background: rgb(2, 47, 2);
 }
 
 .navbar li {
@@ -409,22 +409,22 @@ body {
 }
 /* Designing the colors of the navigation tab when active or hovering */
 .navbar ul li a.active{
-    background-color: red;
+    background-color: rgb(55, 81, 55);
     color: white;
-    border: 2px #B99976;
+    border: 2px white;
 }
 
 .navbar li:hover ul {
     display: block;
 }
 
-.navbar ul ul li a:hover {
+.navbar ul li a:hover {
     background-color: lightgrey;
-    color: navy;
+    color: rgb(2, 69, 24);
 }
 
 .sidenav {
-    background-color: red;
+    background-color: rgb(2, 47, 2);
     color: white;
     display: flex;
 }
@@ -470,104 +470,35 @@ ul.breadcrumb li+li:before {
 }
 
 ul.breadcrumb li a {
-    color: navy;
+    color: darkgreen;
     text-decoration: none;
 }
 
 ul.breadcrumb li a:hover {
-    color: midnightblue;
+    color: rgb(2, 47, 2);
     text-decoration: underline;
 }
 
-.longreadpage {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    font-family: "Palatino Linotype";
-}
-
-.longreadtext{
-    font-size: 20px;
-    font-family: "Palatino Linotype";
-}
 
 .float-left {
     float: left;
     margin-right: 20px;
 }
 
-.long {
-    flex: 0 1 calc(75% - 10px);
-    background-color: white;
-    padding: 20px;
-    box-sizing: border-box;
-    max-width: 70%;
-}
-
-.video-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.video-row {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-video {
-    flex: 1;
-    margin-right: 10px;
-    max-width: calc(50% - 5px);
-}
-
-video:last-child {
-    margin-right: 0;
-}
 
 /* Links in the articles are lightblue without underlining */
-
-.longread a,
-.longreadtext a{
-    color: #258DC1;
-    text-decoration: none;}
-
-.longreadpage .long2 .longreadtext video {
-    display: block;
-    margin: 0 auto;
-}
-
-.long2 {
-    flex: 0 1 calc(75% - 10px);
-    background-color: white;
-    padding: 20px;
-    box-sizing: border-box;
-    max-width: 70%;
-}
-.weather {
-    display: flex;
-    height: 100px;
-    background-color: white;
-    box-sizing: border-box;
-    flex: 0 1 calc(50% - 10px);
-    margin-bottom: 10px;
-    padding-left: 50px;
-    padding-top: 20px;
-    justify-content: center;
-}
-
 
 .heading-3 {
     font-size: 20px;
     text-transform: uppercase;
-    color: crimson;
+    color: rgb(2, 47, 2);
     margin-bottom: 10px;
 }
 
 /* Creating the footer */
 .footer {
     flex: 0 1 calc(100% - 10px);
-    background-color: navy;
+    background-color: rgb(2, 47, 2);
     display: flex;
     margin-bottom: 20px;
     padding: 20px;
@@ -616,7 +547,7 @@ textarea {
 
 /* Styling the submit button*/
 input[type="submit"] {
-    background-color: red;
+    background-color: rgb(2, 47, 2);
     color: white;
     padding: 12px 20px;
     border: none;
