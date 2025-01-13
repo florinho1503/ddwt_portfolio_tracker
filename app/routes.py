@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
-from app.models import Movie, User
+from app.models import User
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm, RegistrationForm
 
@@ -10,57 +10,57 @@ from app.forms import LoginForm, RegistrationForm
 # You don't have to log in for the home page, only for the portfolio tracker
 def index():
     """Display the list of movies."""
-    movies = Movie.query.all()
-    return render_template('index.html', movies=movies)
+    # movies = Movie.query.all()
+    return render_template('index.html')
 
 # Adding Movies
-@app.route('/add_movie', methods=['GET', 'POST'])
-@login_required  # By adding this you get directed to the login screen if you haven't logged in
-def add_movie():
-    """Add a new movie or update an existing one."""
-    movie = None
-    if request.method == 'POST':
-        movie_id = request.form.get('id')
-        if movie_id:
-            # Update existing movie
-            movie = Movie.query.get(movie_id)
-            if movie:
-                movie.name = request.form['name']
-                movie.year = request.form['year']
-                movie.oscars = request.form['oscars']
-            else:
-                return "Movie not found.", 404
-        else:
-            # Add a new movie
-            movie = Movie(
-                name=request.form['name'],
-                year=request.form['year'],
-                oscars=request.form['oscars']
-            )
-        # Save changes to the database
-        db.session.add(movie)
-        db.session.commit()
-        flash('Movie saved successfully!')
-        return redirect(url_for('index'))
-    
-    movie_id = request.args.get('id')
-    if movie_id:
-        movie = Movie.query.get(movie_id)
-    return render_template('add_movie.html', movie=movie)
+# @app.route('/add_movie', methods=['GET', 'POST'])
+# @login_required  # By adding this you get directed to the login screen if you haven't logged in
+# def add_movie():
+#     """Add a new movie or update an existing one."""
+#     movie = None
+#     if request.method == 'POST':
+#         movie_id = request.form.get('id')
+#         if movie_id:
+#             # Update existing movie
+#             movie = Movie.query.get(movie_id)
+#             if movie:
+#                 movie.name = request.form['name']
+#                 movie.year = request.form['year']
+#                 movie.oscars = request.form['oscars']
+#             else:
+#                 return "Movie not found.", 404
+#         else:
+#             # Add a new movie
+#             movie = Movie(
+#                 name=request.form['name'],
+#                 year=request.form['year'],
+#                 oscars=request.form['oscars']
+#             )
+#         # Save changes to the database
+#         db.session.add(movie)
+#         db.session.commit()
+#         flash('Movie saved successfully!')
+#         return redirect(url_for('index'))
+#
+#     movie_id = request.args.get('id')
+#     if movie_id:
+#         movie = Movie.query.get(movie_id)
+#     return render_template('add_movie.html', movie=movie)
 
 # Deleting a movie
-@app.route('/delete_movie/<int:id>', methods=['POST'])
-@login_required  # Again, login required. Users can only view, edit, delete and add new movies after logging in
-def delete_movie(id):
-    """Delete a movie by its ID."""
-    movie_to_delete = Movie.query.get_or_404(id)
-    try:
-        db.session.delete(movie_to_delete)
-        db.session.commit()
-        flash('Movie deleted successfully!')
-        return redirect(url_for('index'))
-    except Exception as e:
-        return f"There was a problem deleting that movie: {e}"
+# @app.route('/delete_movie/<int:id>', methods=['POST'])
+# @login_required  # Again, login required. Users can only view, edit, delete and add new movies after logging in
+# def delete_movie(id):
+#     """Delete a movie by its ID."""
+#     movie_to_delete = Movie.query.get_or_404(id)
+#     try:
+#         db.session.delete(movie_to_delete)
+#         db.session.commit()
+#         flash('Movie deleted successfully!')
+#         return redirect(url_for('index'))
+#     except Exception as e:
+#         return f"There was a problem deleting that movie: {e}"
 
 # Logging in
 @app.route('/login', methods=['GET', 'POST'])

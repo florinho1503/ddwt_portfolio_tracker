@@ -22,9 +22,9 @@ def load_user(id):
     return User.query.get(int(id))
 
 # Defining movie table
-class Movie(db.Model):
-    __table_args__ = {'extend_existing': True}
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    oscars = db.Column(db.Integer, nullable=False)
+# class Movie(db.Model):
+#     __table_args__ = {'extend_existing': True}
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50), nullable=False)
+#     year = db.Column(db.Integer, nullable=False)
+#     oscars = db.Column(db.Integer, nullable=False)
