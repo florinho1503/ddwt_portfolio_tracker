@@ -1,8 +1,9 @@
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
-from app.models import User
+from app.models import User, Transaction, Portfolio
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm, RegistrationForm
+from datetime import datetime
 
 # Reinout Vrielink - S5703166
 # Index/Home page
@@ -14,55 +15,55 @@ def index():
     return render_template('index.html')
 
 # Adding Movies
-# @app.route('/add_movie', methods=['GET', 'POST'])
-# @login_required  # By adding this you get directed to the login screen if you haven't logged in
-# def add_movie():
-#     """Add a new movie or update an existing one."""
-#     movie = None
-#     if request.method == 'POST':
-#         movie_id = request.form.get('id')
-#         if movie_id:
-#             # Update existing movie
-#             movie = Movie.query.get(movie_id)
-#             if movie:
-#                 movie.name = request.form['name']
-#                 movie.year = request.form['year']
-#                 movie.oscars = request.form['oscars']
-#             else:
-#                 return "Movie not found.", 404
-#         else:
-#             # Add a new movie
-#             movie = Movie(
-#                 name=request.form['name'],
-#                 year=request.form['year'],
-#                 oscars=request.form['oscars']
-#             )
-#         # Save changes to the database
-#         db.session.add(movie)
-#         db.session.commit()
-#         flash('Movie saved successfully!')
-#         return redirect(url_for('index'))
-#
-#     movie_id = request.args.get('id')
-#     if movie_id:
-#         movie = Movie.query.get(movie_id)
-#     return render_template('add_movie.html', movie=movie)
+# Adding Transactions
+@app.route('/add_transaction', methods=['GET', 'POST'])
+@login_required
+def add_transaction():
+    """Add a new transaction for the current user's portfolio."""
 
-# Deleting a movie
-# @app.route('/delete_movie/<int:id>', methods=['POST'])
-# @login_required  # Again, login required. Users can only view, edit, delete and add new movies after logging in
-# def delete_movie(id):
-#     """Delete a movie by its ID."""
-#     movie_to_delete = Movie.query.get_or_404(id)
-#     try:
-#         db.session.delete(movie_to_delete)
-#         db.session.commit()
-#         flash('Movie deleted successfully!')
-#         return redirect(url_for('index'))
-#     except Exception as e:
-#         return f"There was a problem deleting that movie: {e}"
+    # Ensure the user has a portfolio
+    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+    if not portfolio:
+        # Automatically create a portfolio for the user if it doesn't exist
+        portfolio = Portfolio(user_id=current_user.id, name='Default Portfolio')
+        db.session.add(portfolio)
+        db.session.commit()
+        print(f"Created portfolio for user {current_user.id}: {portfolio}")
 
-# Logging in
+    if request.method == 'POST':
+        # Debug: Log POST data
+        print(f"POST data received: {request.form}")
+
+        transaction_date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
+
+        # Create a new transaction
+        transaction = Transaction(
+            portfolio_id=portfolio.portfolio_id,  # Automatically associate with the user's portfolio
+            stock_ticker=request.form['stock_ticker'],
+            quantity=float(request.form['quantity']),
+            price=float(request.form['price']),
+            date=transaction_date,
+            transaction_type=request.form['transaction_type']
+        )
+
+        # Save the transaction
+        try:
+            db.session.add(transaction)
+            db.session.commit()
+            print("Transaction saved to the database.")
+            flash('Transaction saved successfully!')
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error saving transaction: {e}")
+            flash('Failed to save transaction.')
+            return redirect(url_for('add_transaction'))
+
+        return redirect(url_for('index'))
+
+    # Render the transaction form
+    return render_template('add_transaction.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Log in an existing user."""
@@ -82,6 +83,13 @@ def login():
     
     return render_template('login.html', title='Login', form=form)
 
+from sqlalchemy import text
+@app.before_request
+def enforce_foreign_keys():
+    """Ensure SQLite enforces foreign key constraints."""
+    if db.engine.dialect.name == "sqlite":
+        db.session.execute(text('PRAGMA foreign_keys=ON;'))
+
 # Logging out
 @app.route('/logout')
 def logout():
@@ -90,13 +98,13 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
-# Registering
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """Register a new user."""
     if current_user.is_authenticated:  # Redirect if already logged in
         return redirect(url_for('index'))
-    
+
     form = RegistrationForm()
     if form.validate_on_submit():  # Validate the registration form
         # Create and save the new user to database
@@ -104,10 +112,18 @@ def register():
         user.set_password(form.password.data)  # Hash the password
         db.session.add(user)
         db.session.commit()
-        flash('Registration successful! Please log in.')
+        flash('Registration successful!')
+
+        # Create a portfolio for the new user
+        portfolio = Portfolio(user_id=user.id, name="Default Portfolio")
+        db.session.add(portfolio)
+        db.session.commit()  # Save the portfolio
+
+        flash('Portfolio created successfully! Please log in.')
         return redirect(url_for('login'))
-    
+
     return render_template('register.html', title='Register', form=form)
+
 
 # If wrong URL is entered you get directed to error page. This is the custom error handler
 @app.errorhandler(404)

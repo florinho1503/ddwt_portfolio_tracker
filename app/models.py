@@ -21,10 +21,21 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
-# Defining movie table
-# class Movie(db.Model):
-#     __table_args__ = {'extend_existing': True}
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(50), nullable=False)
-#     year = db.Column(db.Integer, nullable=False)
-#     oscars = db.Column(db.Integer, nullable=False)
+# Defining transaction table
+class Transaction(db.Model):
+    __tablename__ = 'transactions'  # Define the table name explicitly
+    id = db.Column(db.Integer, primary_key=True)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolios.portfolio_id'), nullable=False)
+    stock_ticker = db.Column(db.String(50), nullable=False)
+    quantity = db.Column(db.Float, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    transaction_type = db.Column(db.String(10), nullable=False)
+
+
+class Portfolio(db.Model):
+    __tablename__ = 'portfolios'  # Explicitly define the table name
+    portfolio_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(120), nullable=False)
+    transactions = db.relationship('Transaction', backref='portfolio', lazy=True)
