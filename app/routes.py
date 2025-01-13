@@ -23,20 +23,19 @@ def portfolio_tracker():
     analyzer = PortfolioAnalyzer(user_id)
 
     # Calculate holdings and plot performance
-    portfolio_df = analyzer.calculate_current_holdings()
+    portfolio_df, latest_values = analyzer.calculate_current_holdings()
 
     if portfolio_df is None:
         holdings = {}
         live_value = 0
         plot_path = None
     else:
-        # Extract current holdings from the latest date
-        latest_date = portfolio_df.index[-1]
-        holdings = portfolio_df.loc[latest_date].to_dict()
-        holdings.pop("Portfolio Value", None)  # Remove Portfolio Value from the holdings
-
         # Calculate the latest portfolio value
         live_value = portfolio_df["Portfolio Value"].iloc[-1]
+
+        # Calculate percentages for pie chart
+        total_value = sum(latest_values.values())
+        holdings = {stock: round((value / total_value) * 100, 2) for stock, value in latest_values.items()}
 
         # Generate the plot
         plot_path = analyzer.plot_portfolio_performance(user_id)
@@ -49,10 +48,6 @@ def portfolio_tracker():
     )
 
 
-
-
-
-# Adding Movies
 # Adding Transactions
 @app.route('/add_transaction', methods=['GET', 'POST'])
 @login_required

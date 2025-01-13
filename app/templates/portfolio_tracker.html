@@ -5,18 +5,23 @@
 {% block content %}
 <h1>Your Portfolio Tracker</h1>
 
-{% if plot_path %}
-<h2>Portfolio Performance</h2>
-<img src="{{ url_for('static', filename=plot_path) }}" alt="Portfolio Performance Graph">
-{% endif %}
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+    {% if plot_path %}
+    <div>
+        <h2>Portfolio Performance</h2>
+        <img src="{{ url_for('static', filename=plot_path) }}" alt="Portfolio Performance Graph" style="max-width: 100%; height: auto;">
+    </div>
+    {% endif %}
+
+    {% if holdings %}
+    <div>
+        <h2>Current Holdings (by Percentage)</h2>
+        <canvas id="holdingsPieChart" width="300" height="300"></canvas>
+    </div>
+    {% endif %}
+</div>
 
 {% if holdings %}
-<h2>Current Holdings</h2>
-<ul>
-    {% for stock, quantity in holdings.items() %}
-    <li>{{ stock }}: {{ quantity }}</li>
-    {% endfor %}
-</ul>
 <h2>Live Portfolio Value</h2>
 <p>${{ live_value }}</p>
 {% else %}
@@ -24,4 +29,50 @@
 {% endif %}
 
 <a href="{{ url_for('add_transaction') }}">Add a New Transaction</a>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if holdings %}
+    const holdingsData = {{ holdings|tojson }};
+    const labels = Object.keys(holdingsData);
+    const data = Object.values(holdingsData);
+
+    const ctx = document.getElementById('holdingsPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Holdings by Value (%)',
+                data: data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
 {% endblock %}

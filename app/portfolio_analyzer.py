@@ -29,7 +29,7 @@ class PortfolioAnalyzer:
         return Transaction.query.filter_by(portfolio_id=portfolio.portfolio_id).all()
 
     def calculate_current_holdings(self):
-        """Calculate the user's portfolio value over time."""
+        """Calculate the user's portfolio value over time and current holdings based on value."""
         if not self.transactions:
             print("No transactions found for this user.")
             return None
@@ -53,6 +53,7 @@ class PortfolioAnalyzer:
 
         # Initialize holdings
         holdings = {stock: 0 for stock in stock_tickers}
+        latest_values = {stock: 0 for stock in stock_tickers}  # Store the latest value for pie chart calculation
 
         for current_date in self.portfolio_df.index:
             # Process transactions for the current date
@@ -71,18 +72,21 @@ class PortfolioAnalyzer:
                     historical_price = historical_data[stock].loc[current_date]
                     portfolio_value += qty * historical_price
                     self.portfolio_df.loc[current_date, stock] = qty
+                    # Update latest value
+                    latest_values[stock] = qty * historical_price
 
             if portfolio_value > 0:
                 self.portfolio_df.loc[current_date, "Portfolio Value"] = portfolio_value
 
         # Forward-fill holdings for non-trading days
         self.portfolio_df.fillna(method="ffill", inplace=True)
-        return self.portfolio_df
+
+        return self.portfolio_df, latest_values
 
     def plot_portfolio_performance(self, user_id):
         """Plot the portfolio performance for the given user, including individual holdings."""
         # Calculate current holdings
-        portfolio_df = self.calculate_current_holdings()
+        portfolio_df, _ = self.calculate_current_holdings()
 
         if portfolio_df is None:
             return None  # No transactions to plot
