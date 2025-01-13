@@ -23,7 +23,7 @@
 
 {% if holdings %}
 <h2>Live Portfolio Value</h2>
-<p>${{ live_value }}</p>
+<p id="liveValue" class="live-value">${{ live_value }}</p>
 {% else %}
 <p>No holdings available.</p>
 {% endif %}
@@ -74,5 +74,42 @@
         }
     });
     {% endif %}
+
+    // Track the previous live value
+    let previousLiveValue = {{ live_value }};
+
+    // Refresh live portfolio value every 5 seconds
+    function refreshLiveValue() {
+        fetch('{{ url_for("get_live_value") }}')
+            .then(response => response.json())
+            .then(data => {
+                const liveValueElement = document.getElementById('liveValue');
+                const newValue = data.live_value;
+
+                // Update the displayed value
+                liveValueElement.textContent = `$${newValue}`;
+
+                // Compare with previous value and apply styles
+                if (newValue > previousLiveValue) {
+                    liveValueElement.classList.add('flash-green');
+                    liveValueElement.classList.remove('flash-red');
+                } else if (newValue < previousLiveValue) {
+                    liveValueElement.classList.add('flash-red');
+                    liveValueElement.classList.remove('flash-green');
+                }
+
+                // Remove the animation class after 1 second
+                setTimeout(() => {
+                    liveValueElement.classList.remove('flash-green', 'flash-red');
+                }, 1000);
+
+                // Update the previous live value
+                previousLiveValue = newValue;
+            })
+            .catch(error => console.error('Error fetching live value:', error));
+    }
+
+    // Refresh live value every 5 seconds
+    setInterval(refreshLiveValue, 5000);
 </script>
 {% endblock %}

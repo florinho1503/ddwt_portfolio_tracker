@@ -15,6 +15,24 @@ def index():
 
 from app.portfolio_analyzer import PortfolioAnalyzer
 
+
+@app.route('/live_value')
+@login_required
+def get_live_value():
+    """Return the latest live portfolio value."""
+    user_id = current_user.id
+    analyzer = PortfolioAnalyzer(user_id)
+
+    portfolio_df, _ = analyzer.calculate_current_holdings()
+
+    if portfolio_df is None:
+        live_value = 0
+    else:
+        live_value = portfolio_df["Portfolio Value"].iloc[-1]
+
+    return {"live_value": round(live_value, 2)}  # Return as JSON
+
+
 @app.route('/portfolio_tracker')
 @login_required
 def portfolio_tracker():
