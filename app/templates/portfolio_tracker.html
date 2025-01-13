@@ -1,7 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Movies{% endblock %}
+{% block title %}Portfolio Tracker{% endblock %}
 
 {% block content %}
+<h1>Your Portfolio Tracker</h1>
+
+{% if plot_path %}
+<h2>Portfolio Performance</h2>
+<img src="{{ url_for('static', filename=plot_path) }}" alt="Portfolio Performance Graph">
+{% endif %}
+
+{% if holdings %}
+<h2>Current Holdings</h2>
+<ul>
+    {% for stock, quantity in holdings.items() %}
+    <li>{{ stock }}: {{ quantity }}</li>
+    {% endfor %}
+</ul>
+<h2>Live Portfolio Value</h2>
+<p>${{ live_value }}</p>
+{% else %}
+<p>No holdings available.</p>
+{% endif %}
+
 <a href="{{ url_for('add_transaction') }}">Add a New Transaction</a>
 {% endblock %}

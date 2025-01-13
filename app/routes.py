@@ -4,15 +4,53 @@ from app.models import User, Transaction, Portfolio
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm, RegistrationForm
 from datetime import datetime
+from .portfolio_analyzer import PortfolioAnalyzer
 
-# Reinout Vrielink - S5703166
-# Index/Home page
 @app.route('/', methods=['GET'])
 # You don't have to log in for the home page, only for the portfolio tracker
 def index():
     """Display the list of movies."""
     # movies = Movie.query.all()
     return render_template('index.html')
+
+from app.portfolio_analyzer import PortfolioAnalyzer
+
+@app.route('/portfolio_tracker')
+@login_required
+def portfolio_tracker():
+    """Display the user's portfolio and performance."""
+    user_id = current_user.id
+    analyzer = PortfolioAnalyzer(user_id)
+
+    # Calculate holdings and plot performance
+    portfolio_df = analyzer.calculate_current_holdings()
+
+    if portfolio_df is None:
+        holdings = {}
+        live_value = 0
+        plot_path = None
+    else:
+        # Extract current holdings from the latest date
+        latest_date = portfolio_df.index[-1]
+        holdings = portfolio_df.loc[latest_date].to_dict()
+        holdings.pop("Portfolio Value", None)  # Remove Portfolio Value from the holdings
+
+        # Calculate the latest portfolio value
+        live_value = portfolio_df["Portfolio Value"].iloc[-1]
+
+        # Generate the plot
+        plot_path = analyzer.plot_portfolio_performance(user_id)
+
+    return render_template(
+        'portfolio_tracker.html',
+        plot_path=plot_path,
+        holdings=holdings,
+        live_value=live_value
+    )
+
+
+
+
 
 # Adding Movies
 # Adding Transactions
@@ -143,8 +181,3 @@ def videos():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-@app.route('/portfolio_tracker')
-@login_required
-def portfolio_tracker():
-    return render_template('portfolio_tracker.html')
