@@ -6,6 +6,43 @@
     <title>Stock News</title>
     <link href="{{ url_for('static', filename='finalproject.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <style>
+        /* Flash green for an increase */
+.flash-green {
+    animation: flash-green 1s ease-in-out;
+    color: #00b300; /* Bright green */
+    font-weight: bold;
+}
+
+/* Flash red for a decrease */
+.flash-red {
+    animation: flash-red 1s ease-in-out;
+    color: #ff0000; /* Bright red */
+    font-weight: bold;
+}
+
+/* Animation keyframes for green flash */
+@keyframes flash-green {
+    0% { background-color: #e6ffe6; }
+    50% { background-color: #ccffcc; }
+    100% { background-color: transparent; }
+}
+
+/* Animation keyframes for red flash */
+@keyframes flash-red {
+    0% { background-color: #ffe6e6; }
+    50% { background-color: #ffcccc; }
+    100% { background-color: transparent; }
+}
+
+/* Default styling for the live value to make it stand out */
+.live-value {
+    font-size: 1.5em; /* Larger font size */
+    color: #333; /* Dark gray */
+    font-weight: bold;
+}
+
+    </style>
 </head>
 <body>
     <!-- Header Section -->

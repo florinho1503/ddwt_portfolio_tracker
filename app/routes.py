@@ -4,9 +4,8 @@ from app.models import User, Transaction, Portfolio
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import LoginForm, RegistrationForm
 from datetime import datetime
+from .portfolio_analyzer import PortfolioAnalyzer
 
-# Reinout Vrielink - S5703166
-# Index/Home page
 @app.route('/', methods=['GET'])
 # You don't have to log in for the home page, only for the portfolio tracker
 def index():
@@ -14,7 +13,59 @@ def index():
     # movies = Movie.query.all()
     return render_template('index.html')
 
-# Adding Movies
+from app.portfolio_analyzer import PortfolioAnalyzer
+
+
+@app.route('/live_value')
+@login_required
+def get_live_value():
+    """Return the latest live portfolio value."""
+    user_id = current_user.id
+    analyzer = PortfolioAnalyzer(user_id)
+
+    portfolio_df, _ = analyzer.calculate_current_holdings()
+
+    if portfolio_df is None:
+        live_value = 0
+    else:
+        live_value = portfolio_df["Portfolio Value"].iloc[-1]
+
+    return {"live_value": round(live_value, 2)}  # Return as JSON
+
+
+@app.route('/portfolio_tracker')
+@login_required
+def portfolio_tracker():
+    """Display the user's portfolio and performance."""
+    user_id = current_user.id
+    analyzer = PortfolioAnalyzer(user_id)
+
+    # Calculate holdings and plot performance
+    portfolio_df, latest_values = analyzer.calculate_current_holdings()
+
+    if portfolio_df is None:
+        holdings = {}
+        live_value = 0
+        plot_path = None
+    else:
+        # Calculate the latest portfolio value
+        live_value = portfolio_df["Portfolio Value"].iloc[-1]
+
+        # Calculate percentages for pie chart
+        total_value = sum(latest_values.values())
+        holdings = {stock: round((value / total_value) * 100, 2) for stock, value in latest_values.items()}
+
+        # Generate the plot
+        plot_path = analyzer.plot_portfolio_performance(user_id)
+
+    return render_template(
+        'portfolio_tracker.html',
+        plot_path=plot_path,
+        holdings=holdings,
+        live_value=live_value
+    )
+
+
 # Adding Transactions
 @app.route('/add_transaction', methods=['GET', 'POST'])
 @login_required
@@ -143,8 +194,3 @@ def videos():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-@app.route('/portfolio_tracker')
-@login_required
-def portfolio_tracker():
-    return render_template('portfolio_tracker.html')
