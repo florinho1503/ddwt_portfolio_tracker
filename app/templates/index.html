@@ -15,7 +15,7 @@
             <nav class="nav2">
                 <p>Categories:</p>
                 <ul>
-                    <li><a href="{{ url_for('stockwatch') }}">Stockwatch</a></li>
+                    <li><a href="{{ url_for('stockwatch') }}">More News</a></li>
                     <li><a href="{{ url_for('portfolio_tracker') }}">Portfolio</a></li>
                     <li><a href="{{ url_for('about') }}">About</a></li>
                 </ul>
@@ -82,19 +82,6 @@
             </a>
         </div>
     </div>
-    <!-- Advertisements -->
-    <div class="row3">
-    <div class="column col-3">
-        <a href="https://www.rug.nl/">
-            <img src="../static/images/rug.png" alt="Article 3">
-        </a>
-    </div>
-    <div class="column col-3">
-        <a href="https://www.braze.com/">
-            <img src="../static/images/braze.png" alt="Article 3">
-        </a>
-    </div>
-    </div>
 
     <!-- Long reads with background pictures -->
     <div class="row3">
@@ -122,21 +109,4 @@
             </a>
         </div>
     </div>
-    <h1>Movies List</h1>
-
-    <!-- Same index as in assignment 1 -->
-    <table>
-        <thead>
-            <tr>
-                <th>Movie ID</th>
-                <th>Movie Name</th>
-                <th>Year</th>
-                <th>Oscars</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    <a href="{{ url_for('add_transaction') }}">Add a New Transaction</a>
 {% endblock %}

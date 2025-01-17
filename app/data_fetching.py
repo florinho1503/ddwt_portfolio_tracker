@@ -1,3 +1,4 @@
+
 import yfinance as yf
 import requests
 from bs4 import BeautifulSoup
@@ -24,3 +25,4 @@ def get_live_price(stock_ticker):
     price_tag = soup.find("fin-streamer", {"data-field": "regularMarketPrice"})
     price = float(price_tag.text.replace(",", ""))
     return price
+
