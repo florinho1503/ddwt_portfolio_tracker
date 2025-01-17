@@ -32,7 +32,8 @@ class PortfolioAnalyzer:
         """Calculate the user's portfolio value over time and current holdings based on value."""
         if not self.transactions:
             print("No transactions found for this user.")
-            return None
+            # Return an empty DataFrame and an empty dictionary
+            return pd.DataFrame(columns=["Portfolio Value"]), {}
 
         # Extract unique stock tickers
         stock_tickers = list(set(t.stock_ticker for t in self.transactions))
@@ -89,6 +90,7 @@ class PortfolioAnalyzer:
     def plot_portfolio_performance(self, user_id):
         """Plot the portfolio performance for the given user, including individual holdings."""
         # Calculate current holdings
+
         portfolio_df, _ = self.calculate_current_holdings()
 
         if portfolio_df is None:

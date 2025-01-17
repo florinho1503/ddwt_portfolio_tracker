@@ -38,14 +38,16 @@ def portfolio_tracker():
 
     portfolio_df, latest_values = analyzer.calculate_current_holdings()
 
-    if portfolio_df is None:
+    if portfolio_df is None or portfolio_df.empty:
+        # Handle the case where there are no transactions or portfolio_df is empty
         holdings = {}
         live_value = 0
         plot_path = None
     else:
-        live_value = portfolio_df["Portfolio Value"].iloc[-1]
+        # Safely calculate the live value and holdings
+        live_value = portfolio_df["Portfolio Value"].iloc[-1] if not portfolio_df["Portfolio Value"].isnull().all() else 0
         total_value = sum(latest_values.values())
-        holdings = {stock: round((value / total_value) * 100, 2) for stock, value in latest_values.items()}
+        holdings = {stock: round((value / total_value) * 100, 2) for stock, value in latest_values.items() if total_value > 0}
         plot_path = analyzer.plot_portfolio_performance(user_id)
 
     return render_template(
@@ -54,6 +56,7 @@ def portfolio_tracker():
         holdings=holdings,
         live_value=live_value
     )
+
 
 @app.route('/add_transaction', methods=['GET', 'POST'])
 @login_required
@@ -82,7 +85,7 @@ def add_transaction():
         except Exception as e:
             db.session.rollback()
             flash(f'Failed to save transaction: {e}')
-        return redirect(url_for('index'))
+        return redirect(url_for('portfolio_tracker'))
 
     return render_template('add_transaction.html')
 
