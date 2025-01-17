@@ -7,6 +7,8 @@ from datetime import datetime
 from .portfolio_analyzer import PortfolioAnalyzer
 from sqlalchemy import text
 from .data_fetching import fetch_historical_data
+from flask import jsonify
+
 
 @app.route('/', methods=['GET'])
 def index():
@@ -35,6 +37,7 @@ def portfolio_tracker():
     """Display the user's portfolio and performance."""
     user_id = current_user.id
     analyzer = PortfolioAnalyzer(user_id)
+    transactions = []
 
     portfolio_df, latest_values = analyzer.calculate_current_holdings()
 
@@ -49,45 +52,96 @@ def portfolio_tracker():
         total_value = sum(latest_values.values())
         holdings = {stock: round((value / total_value) * 100, 2) for stock, value in latest_values.items() if total_value > 0}
         plot_path = analyzer.plot_portfolio_performance(user_id)
+        transactions = analyzer.transactions
 
     return render_template(
         'portfolio_tracker.html',
         plot_path=plot_path,
         holdings=holdings,
-        live_value=live_value
+        live_value=live_value,
+        transactions=transactions
     )
 
 
-@app.route('/add_transaction', methods=['GET', 'POST'])
+@app.route('/submit_transaction', methods=['POST'])
 @login_required
-def add_transaction():
-    """Add a new transaction for the current user's portfolio."""
+def submit_transaction():
+    """Submit a transaction for adding or editing."""
     portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
     if not portfolio:
         portfolio = Portfolio(user_id=current_user.id, name='Default Portfolio')
         db.session.add(portfolio)
         db.session.commit()
 
-    if request.method == 'POST':
-        transaction_date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
-        transaction = Transaction(
-            portfolio_id=portfolio.portfolio_id,
-            stock_ticker=request.form['stock_ticker'],
-            quantity=float(request.form['quantity']),
-            price=float(request.form['price']),
-            date=transaction_date,
-            transaction_type=request.form['transaction_type']
-        )
-        try:
-            db.session.add(transaction)
-            db.session.commit()
-            flash('Transaction saved successfully!')
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Failed to save transaction: {e}')
-        return redirect(url_for('portfolio_tracker'))
+    transaction_id = request.form.get('id')
+    if transaction_id:
+        transaction = Transaction.query.get(transaction_id)
+        if not transaction:
+            return jsonify(success=False, message='Transaction not found.')
+    else:
+        transaction = Transaction(portfolio_id=portfolio.portfolio_id)
 
-    return render_template('add_transaction.html')
+    stock_ticker = request.form['stock_ticker'].upper()
+    historical_data = fetch_historical_data(stock_ticker)
+    if historical_data.empty or 'Close' not in historical_data:
+        return jsonify(success=False, message=f"Invalid stock ticker: {stock_ticker}")
+
+    transaction_date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
+    if transaction_date > datetime.today().date():
+        return jsonify(success=False, message="Transaction date cannot be in the future.")
+
+    transaction_type = request.form['transaction_type'].upper()
+    quantity = float(request.form['quantity'])
+    price = float(request.form['price'])
+
+    if transaction_type not in ["BUY", "SELL"]:
+        return jsonify(success=False, message="Transaction type must be 'BUY' or 'SELL'.")
+    if quantity <= 0:
+        return jsonify(success=False, message="Quantity must be greater than zero.")
+    if price <= 0:
+        return jsonify(success=False, message="Price must be greater than zero.")
+
+    if transaction_type == "SELL":
+        owned_quantity = sum(
+            t.quantity if t.transaction_type == "BUY" else -t.quantity
+            for t in Transaction.query.filter_by(portfolio_id=portfolio.portfolio_id, stock_ticker=stock_ticker).all()
+        )
+        if transaction_id:
+            if transaction.transaction_type == "BUY":
+                owned_quantity -= transaction.quantity
+            elif transaction.transaction_type == "SELL":
+                owned_quantity += transaction.quantity
+
+        if owned_quantity < quantity:
+            return jsonify(success=False, message=f"Not enough {stock_ticker} to sell. You only own {owned_quantity} shares.")
+
+    transaction.stock_ticker = stock_ticker
+    transaction.transaction_type = transaction_type
+    transaction.quantity = quantity
+    transaction.price = price
+    transaction.date = transaction_date
+
+    if not transaction_id:
+        db.session.add(transaction)
+
+    db.session.commit()
+    action = "updated" if transaction_id else "added"
+    return jsonify(success=True, message=f'Transaction {action} successfully!')
+
+
+@app.route('/delete_transaction', methods=['POST'])
+@login_required
+def delete_transaction():
+    """Delete a transaction."""
+    transaction_id = request.form['id']
+    transaction = Transaction.query.get(transaction_id)
+
+    if not transaction:
+        return jsonify(success=False, message='Transaction not found.')
+
+    db.session.delete(transaction)
+    db.session.commit()
+    return jsonify(success=True, message='Transaction deleted successfully!')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -247,20 +301,41 @@ def add_transaction_api():
         db.session.add(portfolio)
         db.session.commit()
 
-    try:
-        transaction_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+    stock_ticker = data['stock_ticker'].upper()
+    transaction_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+    transaction_type = data['transaction_type'].upper()
+    quantity = float(data['quantity'])
+    price = float(data['price'])
 
-        transaction = Transaction(
-            portfolio_id=portfolio.portfolio_id,
-            stock_ticker=data['stock_ticker'],
-            quantity=float(data['quantity']),
-            price=float(data['price']),
-            date=transaction_date,
-            transaction_type=data['transaction_type'].upper()
+    if transaction_date > datetime.today().date():
+        return jsonify({'error': 'Transaction date cannot be in the future.'}), 400
+    if transaction_type not in ["BUY", "SELL"]:
+        return jsonify({'error': 'Transaction type must be "BUY" or "SELL".'}), 400
+    if quantity <= 0:
+        return jsonify({'error': 'Quantity must be greater than zero.'}), 400
+    if price <= 0:
+        return jsonify({'error': 'Price must be greater than zero.'}), 400
+
+    historical_data = fetch_historical_data(stock_ticker)
+    if historical_data.empty or 'Close' not in historical_data:
+        return jsonify({'error': f'Invalid stock ticker: {stock_ticker}'}), 400
+
+    if transaction_type == "SELL":
+        owned_quantity = sum(
+            t.quantity if t.transaction_type == "BUY" else -t.quantity
+            for t in Transaction.query.filter_by(portfolio_id=portfolio.portfolio_id, stock_ticker=stock_ticker).all()
         )
-        db.session.add(transaction)
-        db.session.commit()
-        return jsonify({'message': 'Transaction added successfully.'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        if owned_quantity < quantity:
+            return jsonify({'error': f'Not enough {stock_ticker} to sell. You only own {owned_quantity} shares.'}), 400
+
+    transaction = Transaction(
+        portfolio_id=portfolio.portfolio_id,
+        stock_ticker=stock_ticker,
+        quantity=quantity,
+        price=price,
+        date=transaction_date,
+        transaction_type=transaction_type
+    )
+    db.session.add(transaction)
+    db.session.commit()
+    return jsonify({'message': 'Transaction added successfully.'}), 201

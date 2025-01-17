@@ -28,21 +28,176 @@
         </div>
     </div>
     {% if holdings %}
-    <div class ="row1"></div>
-        <h2>Live Portfolio Value (updates every 5s)</h2>
-        <p id="liveValue" class="live-value">${{ live_value }}</p>
-    </div>
-    {% else %}
-    <p>No holdings available.</p>
-    {% endif %}
+<div class="row1">
+    <h2>Live Portfolio Value (updates every 5s)</h2>
+    <p id="liveValue" class="live-value">${{ live_value }}</p>
+</div>
+{% else %}
+<p>No holdings available.</p>
+{% endif %}
 
-    <div style="text-align: center; margin-top: 20px;">
-        <button class="add-transaction-btn" onclick="location.href='/add_transaction'">Add Transaction</button>
-    </div>
+<h3>Transaction History</h3>
+{% if transactions %}
+<table id="transactionTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Stock Ticker</th>
+            <th>Transaction Type</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr data-id="{{ transaction.id }}">
+            <td contenteditable="true" class="stock-ticker">{{ transaction.stock_ticker }}</td>
+            <td contenteditable="true" class="transaction-type">{{ transaction.transaction_type }}</td>
+            <td contenteditable="true" class="quantity">{{ transaction.quantity }}</td>
+            <td contenteditable="true" class="price">{{ transaction.price }}</td>
+            <td contenteditable="true" class="date">{{ transaction.date }}</td>
+            <td>
+                <button class="btn btn-primary btn-sm action-btn save-btn">Save</button>
+                <button class="btn btn-danger btn-sm action-btn delete-btn">Delete</button>
+            </td>
+        </tr>
+        {% endfor %}
+        <!-- Empty Row for Adding a New Transaction -->
+        <tr id="newTransactionRow">
+            <td><input type="text" class="form-control new-stock-ticker" placeholder="Enter Stock Ticker"></td>
+            <td>
+                <select class="form-control new-transaction-type">
+                    <option value="" disabled selected>Enter Type</option>
+                    <option value="BUY">Buy</option>
+                    <option value="SELL">Sell</option>
+                </select>
+            </td>
+            <td><input type="number" class="form-control new-quantity" placeholder="Enter Quantity"></td>
+            <td><input type="number" class="form-control new-price" placeholder="Enter Price"></td>
+            <td><input type="date" class="form-control new-date"></td>
+            <td>
+                <button class="btn btn-success btn-sm action-btn add-btn">Add</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+{% else %}
+<p>No transactions found.</p>
+{% endif %}
+
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        {% if holdings %}
+$(document).on('click', '.save-btn', function () {
+    const row = $(this).closest('tr');
+    const transactionId = row.data('id');
+
+    const updatedData = {
+        id: transactionId,
+        stock_ticker: row.find('.stock-ticker').text().trim().toUpperCase(),
+        transaction_type: row.find('.transaction-type').text().trim().toUpperCase(),
+        quantity: parseFloat(row.find('.quantity').text().trim()),
+        price: parseFloat(row.find('.price').text().trim()),
+        date: row.find('.date').text().trim()
+    };
+
+    if (!updatedData.stock_ticker) {
+        alert('Stock ticker is required.');
+        return;
+    }
+    if (!['BUY', 'SELL'].includes(updatedData.transaction_type)) {
+        alert('Transaction type must be "BUY" or "SELL".');
+        return;
+    }
+    if (isNaN(updatedData.quantity) || updatedData.quantity <= 0) {
+        alert('Quantity must be a positive number.');
+        return;
+    }
+    if (isNaN(updatedData.price) || updatedData.price <= 0) {
+        alert('Price must be a positive number.');
+        return;
+    }
+    if (!updatedData.date) {
+        alert('Date is required.');
+        return;
+    }
+
+    $.post('/submit_transaction', updatedData, function (response) {
+        if (response.success) {
+            alert('Transaction updated successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + response.message);
+        }
+    });
+});
+
+$(document).on('click', '.delete-btn', function() {
+    const transactionId = $(this).closest('tr').data('id');
+
+    if (confirm('Are you sure you want to delete this transaction?')) {
+        $.post('/delete_transaction', { id: transactionId }, function(response) {
+            if (response.success) {
+                alert(response.message);
+                location.reload();
+            } else {
+                alert('Error: ' + response.message);
+            }
+        });
+    }
+});
+
+$(document).on('click', '.add-btn', function () {
+    const row = $(this).closest('tr');
+
+    const newTransactionData = {
+        stock_ticker: row.find('.new-stock-ticker').val().trim().toUpperCase(),
+        transaction_type: row.find('.new-transaction-type').val(),
+        quantity: parseFloat(row.find('.new-quantity').val().trim()),
+        price: parseFloat(row.find('.new-price').val().trim()),
+        date: row.find('.new-date').val().trim()
+    };
+
+    if (!newTransactionData.stock_ticker) {
+        alert('Stock ticker is required.');
+        return;
+    }
+    if (!['BUY', 'SELL'].includes(newTransactionData.transaction_type)) {
+        alert('Transaction type must be "BUY" or "SELL".');
+        return;
+    }
+    if (isNaN(newTransactionData.quantity) || newTransactionData.quantity <= 0) {
+        alert('Quantity must be a positive number.');
+        return;
+    }
+    if (isNaN(newTransactionData.price) || newTransactionData.price <= 0) {
+        alert('Price must be a positive number.');
+        return;
+    }
+    if (!newTransactionData.date) {
+        alert('Date is required.');
+        return;
+    }
+
+    $.post('/submit_transaction', newTransactionData, function (response) {
+        if (response.success) {
+            alert(response.message);
+            location.reload();
+        } else {
+            alert('Error: ' + response.message);
+        }
+    });
+});
+
+
+
+{% if holdings %}
         const holdingsData = {{ holdings|tojson }};
         const labels = Object.keys(holdingsData);
         const data = Object.values(holdingsData);
@@ -88,7 +243,6 @@
         // Track the previous live value
         let previousLiveValue = {{ live_value }};
 
-        // Refresh live portfolio value every 5 seconds
         function refreshLiveValue() {
             fetch('{{ url_for("get_live_value") }}')
                 .then(response => response.json())
@@ -96,10 +250,8 @@
                     const liveValueElement = document.getElementById('liveValue');
                     const newValue = data.live_value;
 
-                    // Update the displayed value
                     liveValueElement.textContent = `$${newValue}`;
 
-                    // Compare with previous value and apply styles
                     if (newValue > previousLiveValue) {
                         liveValueElement.classList.add('flash-green');
                         liveValueElement.classList.remove('flash-red');
@@ -108,12 +260,10 @@
                         liveValueElement.classList.remove('flash-green');
                     }
 
-                    // Remove the animation class after 1 second
                     setTimeout(() => {
                         liveValueElement.classList.remove('flash-green', 'flash-red');
                     }, 1000);
 
-                    // Update the previous live value
                     previousLiveValue = newValue;
                 })
                 .catch(error => console.error('Error fetching live value:', error));

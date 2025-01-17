@@ -32,7 +32,6 @@ class PortfolioAnalyzer:
         """Calculate the user's portfolio value over time and current holdings based on value."""
         if not self.transactions:
             print("No transactions found for this user.")
-            # Return an empty DataFrame and an empty dictionary
             return pd.DataFrame(columns=["Portfolio Value"]), {}
 
         # Extract unique stock tickers
@@ -41,23 +40,27 @@ class PortfolioAnalyzer:
         # Fetch historical data for each stock
         historical_data = {}
         for stock_ticker in stock_tickers:
-            historical_data[stock_ticker] = fetch_historical_data(stock_ticker)['Close']
+            stock_data = fetch_historical_data(stock_ticker)
+            if 'Close' not in stock_data:
+                raise ValueError(f"Invalid stock ticker: {stock_ticker}")
+            historical_data[stock_ticker] = stock_data['Close']
             historical_data[stock_ticker].index = historical_data[stock_ticker].index.tz_localize(None)
 
-        # Create a DataFrame to store portfolio value over time
+        if not historical_data:
+            print("No valid historical data found.")
+            return pd.DataFrame(columns=["Portfolio Value"]), {}
+
         date_range = pd.date_range(
             start=min(pd.Timestamp(t.date) for t in self.transactions),
             end=pd.Timestamp.today()
         )
         self.portfolio_df = pd.DataFrame(index=date_range, columns=["Portfolio Value"] + stock_tickers)
-        self.portfolio_df["Portfolio Value"] = None  # Set to None for forward-filling
+        self.portfolio_df["Portfolio Value"] = None
 
-        # Initialize holdings
         holdings = {stock: 0 for stock in stock_tickers}
-        latest_values = {stock: 0 for stock in stock_tickers}  # Store the latest value for pie chart calculation
+        latest_values = {stock: 0 for stock in stock_tickers}
 
         for current_date in self.portfolio_df.index:
-            # Process transactions for the current date
             for transaction in self.transactions:
                 transaction_date = pd.Timestamp(transaction.date).tz_localize(None)
                 if transaction_date == current_date:
@@ -66,48 +69,37 @@ class PortfolioAnalyzer:
                     elif transaction.transaction_type.lower() == "sell":
                         holdings[transaction.stock_ticker] -= transaction.quantity
 
-            # Calculate portfolio value for the current date
             portfolio_value = 0
             for stock, qty in holdings.items():
                 if stock in historical_data:
-                    # Get the last known price
                     available_data = historical_data[stock][historical_data[stock].index <= current_date]
                     if not available_data.empty:
-                        last_closing_price = available_data.iloc[-1]  # Use the most recent available price
+                        last_closing_price = available_data.iloc[-1]
                         portfolio_value += qty * last_closing_price
                         self.portfolio_df.loc[current_date, stock] = qty
-                        # Update latest value
                         latest_values[stock] = qty * last_closing_price
 
             if portfolio_value > 0:
                 self.portfolio_df.loc[current_date, "Portfolio Value"] = portfolio_value
 
-        # Forward-fill holdings for non-trading days
         self.portfolio_df.fillna(method="ffill", inplace=True)
-
         return self.portfolio_df, latest_values
 
     def plot_portfolio_performance(self, user_id):
         """Plot the portfolio performance for the given user, including individual holdings."""
-        # Calculate current holdings
 
         portfolio_df, _ = self.calculate_current_holdings()
 
         if portfolio_df is None:
-            return None  # No transactions to plot
+            return None
 
-        # Create a new figure and axis
         fig, ax = plt.subplots()
 
-        # Plot the total portfolio value
         portfolio_df["Portfolio Value"].plot(ax=ax, label="Total Portfolio Value", linewidth=2)
 
-        # Plot individual stock holdings
         for stock in portfolio_df.columns:
             if stock != "Portfolio Value":
-                # Fetch historical data
                 historical_data = fetch_historical_data(stock)['Close']
-                # Convert historical data index to tz-naive
                 historical_data.index = historical_data.index.tz_localize(None)
 
                 aligned_data = historical_data.reindex(portfolio_df.index, method="ffill")
@@ -115,21 +107,17 @@ class PortfolioAnalyzer:
                 (portfolio_df[stock] * aligned_data).fillna(0).plot(
                     ax=ax, label=f"{stock} Value", linewidth=1.5
                 )
-        # Add labels and title
 
-        # Add labels and title
         ax.set_title("Portfolio Performance Over Time")
         ax.set_xlabel("Date")
         ax.set_ylabel("Value")
         ax.legend()
         plt.tight_layout()
 
-        # Save the plot to the static directory
         static_dir = os.path.join(current_app.root_path, "static")
         os.makedirs(static_dir, exist_ok=True)  # Create the directory if it doesn't exist
         plot_path = os.path.join(static_dir, f"portfolio_performance_{user_id}.png")
 
-        # Save the plot
         plt.savefig(plot_path)
         plt.close()
         return f"portfolio_performance_{user_id}.png"
