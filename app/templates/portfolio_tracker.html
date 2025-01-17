@@ -29,14 +29,16 @@
     </div>
     {% if holdings %}
     <div class ="row1"></div>
-        <h2>Live Portfolio Value</h2>
+        <h2>Live Portfolio Value (updates every 5s)</h2>
         <p id="liveValue" class="live-value">${{ live_value }}</p>
     </div>
     {% else %}
     <p>No holdings available.</p>
     {% endif %}
 
-    <a href="{{ url_for('add_transaction') }}">Add a New Transaction</a>
+    <div style="text-align: center; margin-top: 20px;">
+        <button class="add-transaction-btn" onclick="location.href='/add_transaction'">Add Transaction</button>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>

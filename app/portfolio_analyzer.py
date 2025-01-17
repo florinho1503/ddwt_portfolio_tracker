@@ -68,12 +68,15 @@ class PortfolioAnalyzer:
             # Calculate portfolio value for the current date
             portfolio_value = 0
             for stock, qty in holdings.items():
-                if stock in historical_data and current_date in historical_data[stock].index:
-                    historical_price = historical_data[stock].loc[current_date]
-                    portfolio_value += qty * historical_price
-                    self.portfolio_df.loc[current_date, stock] = qty
-                    # Update latest value
-                    latest_values[stock] = qty * historical_price
+                if stock in historical_data:
+                    # Get the last known price
+                    available_data = historical_data[stock][historical_data[stock].index <= current_date]
+                    if not available_data.empty:
+                        last_closing_price = available_data.iloc[-1]  # Use the most recent available price
+                        portfolio_value += qty * last_closing_price
+                        self.portfolio_df.loc[current_date, stock] = qty
+                        # Update latest value
+                        latest_values[stock] = qty * last_closing_price
 
             if portfolio_value > 0:
                 self.portfolio_df.loc[current_date, "Portfolio Value"] = portfolio_value
