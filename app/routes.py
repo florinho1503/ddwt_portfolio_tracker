@@ -12,7 +12,7 @@ from flask import jsonify
 
 @app.route('/', methods=['GET'])
 def index():
-    """Display the list of movies."""
+    """Displays index page."""
     return render_template('index.html')
 
 @app.route('/live_value')
@@ -42,13 +42,12 @@ def portfolio_tracker():
     portfolio_df, latest_values = analyzer.calculate_current_holdings()
 
     if portfolio_df is None or portfolio_df.empty:
-        # Handle the case where there are no transactions or portfolio_df is empty
         holdings = {}
         live_value = 0
         plot_path = None
     else:
-        # Safely calculate the live value and holdings
         live_value = portfolio_df["Portfolio Value"].iloc[-1] if not portfolio_df["Portfolio Value"].isnull().all() else 0
+        live_value = round(live_value, 2)  # Ensure max 2 decimal places
         total_value = sum(latest_values.values())
         holdings = {stock: round((value / total_value) * 100, 2) for stock, value in latest_values.items() if total_value > 0}
         plot_path = analyzer.plot_portfolio_performance(user_id)
@@ -61,6 +60,7 @@ def portfolio_tracker():
         live_value=live_value,
         transactions=transactions
     )
+
 
 
 @app.route('/submit_transaction', methods=['POST'])

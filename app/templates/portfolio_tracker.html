@@ -37,7 +37,6 @@
 {% endif %}
 
 <h3>Transaction History</h3>
-{% if transactions %}
 <table id="transactionTable" class="table table-striped">
     <thead>
         <tr>
@@ -50,19 +49,21 @@
         </tr>
     </thead>
     <tbody>
-        {% for transaction in transactions %}
-        <tr data-id="{{ transaction.id }}">
-            <td contenteditable="true" class="stock-ticker">{{ transaction.stock_ticker }}</td>
-            <td contenteditable="true" class="transaction-type">{{ transaction.transaction_type }}</td>
-            <td contenteditable="true" class="quantity">{{ transaction.quantity }}</td>
-            <td contenteditable="true" class="price">{{ transaction.price }}</td>
-            <td contenteditable="true" class="date">{{ transaction.date }}</td>
-            <td>
-                <button class="btn btn-primary btn-sm action-btn save-btn">Save</button>
-                <button class="btn btn-danger btn-sm action-btn delete-btn">Delete</button>
-            </td>
-        </tr>
-        {% endfor %}
+        {% if transactions %}
+            {% for transaction in transactions %}
+            <tr data-id="{{ transaction.id }}">
+                <td contenteditable="true" class="stock-ticker">{{ transaction.stock_ticker }}</td>
+                <td contenteditable="true" class="transaction-type">{{ transaction.transaction_type }}</td>
+                <td contenteditable="true" class="quantity">{{ transaction.quantity }}</td>
+                <td contenteditable="true" class="price">{{ transaction.price }}</td>
+                <td contenteditable="true" class="date">{{ transaction.date }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm action-btn save-btn">Save</button>
+                    <button class="btn btn-danger btn-sm action-btn delete-btn">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
         <!-- Empty Row for Adding a New Transaction -->
         <tr id="newTransactionRow">
             <td><input type="text" class="form-control new-stock-ticker" placeholder="Enter Stock Ticker"></td>
@@ -83,9 +84,10 @@
     </tbody>
 </table>
 
-{% else %}
-<p>No transactions found.</p>
+{% if not transactions %}
+<p>No transactions yet. Use the form above to add one.</p>
 {% endif %}
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
