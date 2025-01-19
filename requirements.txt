@@ -1,0 +1,12 @@
+flask==3.0.3
+pandas==2.2.2
+sqlalchemy==2.0.35
+requests==2.31.0
+matplotlib==3.7.1
+flask-login==0.6.3
+flask-httpauth==4.8.0
+pycoingecko==3.2.0
+werkzeug==3.0.6
+wtforms==3.2.1
+flask-wtf==1.2.2
+yfinance==0.2.28
