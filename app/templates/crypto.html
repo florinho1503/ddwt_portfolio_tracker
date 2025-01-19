@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Cryptocurrency Prices{% endblock %}
+
+{% block content %}
+<h1>Cryptocurrency Prices and Market Data</h1>
+
+<!-- Display the current prices and market data -->
+<table id="cryptoTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price (USD)</th>
+            <th>Market Cap</th>
+            <th>24h Volume</th>
+            <th>24h Change</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for crypto in crypto_data %}
+        <tr id="crypto-{{ crypto['id'] }}">
+            <td>{{ crypto['name'] }}</td>
+            <td>${{ crypto['current_price'] }}</td>
+            <td>${{ "{:,}".format(crypto['market_cap']) }}</td>
+            <td>${{ "{:,}".format(crypto['total_volume']) }}</td>
+            <td style="color: {{ 'green' if crypto['price_change_percentage_24h'] > 0 else 'red' }}">
+                {{ crypto['price_change_percentage_24h']|round(2) }}%
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    table th, table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+
+</style>
+{% endblock %}

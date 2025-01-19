@@ -91,11 +91,14 @@
             {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
                 <li><a href="{{ url_for('stockwatch') }}" class="{% if request.endpoint == 'stockwatch' %}active{% endif %}">News</a></li>
+                <li><a href="{{ url_for('crypto') }}" class="{% if request.endpoint == 'crypto' %}active{% endif %}">Crypto Prices</a></li>
                 <li><a href="{{ url_for('portfolio_tracker') }}" class="{% if request.endpoint == 'portfolio_tracker' %}active{% endif %}">Portfolio Tracker</a></li>
                 <li><a href="{{ url_for('logout') }}" class="{% if request.endpoint == 'logout' %}active{% endif %}">Logout</a></li>
+
             {% else %}
                 <li><a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
                 <li><a href="{{ url_for('stockwatch') }}" class="{% if request.endpoint == 'stockwatch' %}active{% endif %}">News</a></li>
+                <li><a href="{{ url_for('crypto') }}" class="{% if request.endpoint == 'crypto' %}active{% endif %}">Crypto Prices</a></li>
                 <li><a href="{{ url_for('portfolio_tracker') }}" class="{% if request.endpoint == 'portfolio_tracker' %}active{% endif %}">Portfolio Tracker</a></li>
                 <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
                 <li><a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a></li>

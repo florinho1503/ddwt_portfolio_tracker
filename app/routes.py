@@ -1,3 +1,5 @@
+import pprint
+
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from app.models import User, Transaction, Portfolio
@@ -9,7 +11,11 @@ from sqlalchemy import text
 from .data_fetching import fetch_historical_data
 from flask import jsonify
 from flask_httpauth import HTTPBasicAuth
+from pycoingecko import CoinGeckoAPI
+import json
 
+
+cg = CoinGeckoAPI()
 auth = HTTPBasicAuth()
 
 @auth.verify_password
@@ -207,6 +213,15 @@ def page_not_found(e):
 @app.route('/stockwatch')
 def stockwatch():
     return render_template('stockwatch.html')
+
+
+
+@app.route('/crypto', methods=['GET'])
+def crypto():
+    crypto_ids = ['bitcoin', 'ethereum', 'cardano','ripple','solana','tether','binancecoin','dogecoin','usd-coin','staked-ether']
+    crypto_data = cg.get_coins_markets(vs_currency='usd', ids=','.join(crypto_ids))
+    return render_template('crypto.html', crypto_data=crypto_data)
+
 
 @app.route('/about')
 def about():
