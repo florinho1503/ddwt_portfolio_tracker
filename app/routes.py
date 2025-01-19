@@ -8,8 +8,16 @@ from .portfolio_analyzer import PortfolioAnalyzer
 from sqlalchemy import text
 from .data_fetching import fetch_historical_data
 from flask import jsonify
+from flask_httpauth import HTTPBasicAuth
 
+auth = HTTPBasicAuth()
 
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username=username).first()
+    if user and user.check_password(password):
+        return user
+    return None
 @app.route('/', methods=['GET'])
 def index():
     """Displays index page."""
@@ -206,10 +214,11 @@ def about():
 
 # API Endpoints
 @app.route('/api/portfolio', methods=['GET'])
-@login_required
+@auth.login_required
 def get_portfolio_summary():
-    """Fetch portfolio summary"""
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+    """Fetch portfolio summary."""
+    user = auth.current_user()
+    portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
         return jsonify({'error': 'No portfolio found for this user.'}), 404
 
@@ -226,16 +235,8 @@ def get_portfolio_summary():
         elif t.transaction_type.lower() == 'sell':
             holdings[t.stock_ticker] -= t.quantity
 
-    historical_data = {}
-    for ticker in holdings.keys():
-        if holdings[ticker] > 0:
-            historical_data[ticker] = fetch_historical_data(ticker)['Close']
-
-    total_value = 0
-    for ticker, qty in holdings.items():
-        if qty > 0 and ticker in historical_data:
-            latest_price = historical_data[ticker].iloc[-1]
-            total_value += qty * latest_price
+    total_value = sum(qty * fetch_historical_data(ticker)['Close'].iloc[-1]
+                      for ticker, qty in holdings.items() if qty > 0)
 
     return jsonify({
         'portfolio_id': portfolio.portfolio_id,
@@ -244,10 +245,11 @@ def get_portfolio_summary():
     })
 
 @app.route('/api/portfolio/transactions', methods=['GET'])
-@login_required
+@auth.login_required
 def get_transactions():
     """Fetch all transactions."""
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+    user = auth.current_user()
+    portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
         return jsonify({'error': 'No portfolio found for this user.'}), 404
 
@@ -266,10 +268,11 @@ def get_transactions():
     return jsonify(transactions_data)
 
 @app.route('/api/portfolio/holdings', methods=['GET'])
-@login_required
+@auth.login_required
 def get_holdings():
-    """Fetch holdings and their ticker"""
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+    """Fetch holdings and their ticker."""
+    user = auth.current_user()
+    portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
         return jsonify({'error': 'No portfolio found for this user.'}), 404
 
@@ -285,9 +288,10 @@ def get_holdings():
     return jsonify(holdings)
 
 @app.route('/api/portfolio/transaction', methods=['POST'])
-@login_required
+@auth.login_required
 def add_transaction_api():
     """Add a new transaction via API."""
+    user = auth.current_user()
     data = request.get_json()
     required_fields = ['stock_ticker', 'quantity', 'price', 'date', 'transaction_type']
 
@@ -295,9 +299,9 @@ def add_transaction_api():
         if field not in data:
             return jsonify({'error': f'Missing field: {field}'}), 400
 
-    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+    portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
-        portfolio = Portfolio(user_id=current_user.id, name='Default Portfolio')
+        portfolio = Portfolio(user_id=user.id, name='Default Portfolio')
         db.session.add(portfolio)
         db.session.commit()
 
@@ -319,14 +323,6 @@ def add_transaction_api():
     historical_data = fetch_historical_data(stock_ticker)
     if historical_data.empty or 'Close' not in historical_data:
         return jsonify({'error': f'Invalid stock ticker: {stock_ticker}'}), 400
-
-    if transaction_type == "SELL":
-        owned_quantity = sum(
-            t.quantity if t.transaction_type == "BUY" else -t.quantity
-            for t in Transaction.query.filter_by(portfolio_id=portfolio.portfolio_id, stock_ticker=stock_ticker).all()
-        )
-        if owned_quantity < quantity:
-            return jsonify({'error': f'Not enough {stock_ticker} to sell. You only own {owned_quantity} shares.'}), 400
 
     transaction = Transaction(
         portfolio_id=portfolio.portfolio_id,
