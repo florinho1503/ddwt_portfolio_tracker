@@ -7,7 +7,7 @@ It also includes a home page with various articles on the latest financial news,
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/florinho1503/ddwt_portfolio_tracker
-   cd portfolio-tracker
+   cd ddwt_portfolio_tracker
 2. **Set up virtual environment**
   python3 -m venv venv
   source venv/bin/activate (for Windows: venv\Scripts\activate)
