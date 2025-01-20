@@ -7,6 +7,7 @@ body {
 @media screen and (max-width: 767.98px) {
     /* Responsiveness for screens with the size of a phone */
     /* Making sure the title has enough padding underneath */
+    /* We knew how making the website responsive because we also did that during the course Webtechnology, so we reused some of the code we wrote for that course in this project */
     .col-12{
         padding-bottom: 20px;
     }
@@ -83,9 +84,6 @@ body {
         width: 100%;
     }
 
-    .longreadtext img {
-        max-width: 200px;
-    }
 }
 
 @media screen and (min-width: 768px) and (max-width: 1100px) {
@@ -122,11 +120,6 @@ body {
         margin-bottom: 20px;
     }
 
-    .longreadtext img {
-        max-width: 200px;
-        height: auto;
-    }
-
 }
 
 @media (min-width: 768px) {
@@ -145,6 +138,8 @@ body {
         flex-wrap: wrap;
     }
 }
+
+/* We used some ChatGPT for the CSS, but we also used some css from former webtech projects. */
 
 .column {
     flex: 1 0 100%;
@@ -371,7 +366,7 @@ body {
     overflow: hidden;
     white-space: nowrap;
 }
-/* CSS for the navigation bar */
+/* CSS for the navigation bar, did use ChatGPT for things like z-index */
 .navbar {
     flex: 0 1 calc(100% - 10px);
     position: relative;
@@ -485,16 +480,6 @@ ul.breadcrumb li a:hover {
     margin-right: 20px;
 }
 
-
-/* Links in the articles are lightblue without underlining */
-
-.heading-3 {
-    font-size: 20px;
-    text-transform: uppercase;
-    color: rgb(2, 47, 2);
-    margin-bottom: 10px;
-}
-
 /* Creating the footer */
 .footer {
     flex: 0 1 calc(100% - 10px);
@@ -522,11 +507,6 @@ ul.breadcrumb li a:hover {
 
 label {
     font-weight: bold;
-}
-
-.maps {
-    display: flex;
-    justify-content: center;
 }
 
 /* The form on the contact page */
@@ -599,27 +579,4 @@ input[type="submit"]:hover {
 
 .nav2 a:hover {
     font-weight: bold;
-}
-
-/* Blockquotes */
-
-blockquote {
-    font-family: 'Merriweather', serif;
-    font-weight: normal;
-    font-style: italic;
-    quotes: "“" "”";
-    padding: 10px;
-    border-left: 4px solid #ccc;
-    display: flex;
-    justify-content: center;
-    max-width: 78%;
-    margin: 0 auto;
-}
-
-blockquote p{
-    font-family: 'Merriweather', serif;
-    font-weight:bold;
-    font-style: normal;
-    margin: 0;
-    display: inline;
 }

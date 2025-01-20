@@ -18,6 +18,8 @@ import json
 cg = CoinGeckoAPI()
 auth = HTTPBasicAuth()
 
+# For the login we basically just used the same login code that we used in assignment 2
+
 @auth.verify_password
 def verify_password(username, password):
     user = User.query.filter_by(username=username).first()
@@ -157,6 +159,7 @@ def delete_transaction():
     db.session.commit()
     return jsonify(success=True, message='Transaction deleted successfully!')
 
+# Login literally copied from our code of assignment 2.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Log in an existing user."""
@@ -179,7 +182,7 @@ def enforce_foreign_keys():
     if db.engine.dialect.name == "sqlite":
         db.session.execute(text('PRAGMA foreign_keys=ON;'))
 
-
+# Logging out
 @app.route('/logout')
 def logout():
     """Log out the current user."""
@@ -187,6 +190,7 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
+# For registering we also used same method as in assignment now also working with your own portfolio
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """Register a new user."""
@@ -213,8 +217,6 @@ def page_not_found(e):
 @app.route('/stockwatch')
 def stockwatch():
     return render_template('stockwatch.html')
-
-
 
 @app.route('/crypto', methods=['GET'])
 def crypto():
