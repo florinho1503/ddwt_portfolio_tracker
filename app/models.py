@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
 
+
 # UserMixin from tutorial, includes safe implementations that are appropriate for most user model classes.
 # Defining Users
 class User(UserMixin, db.Model):
@@ -17,9 +18,11 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
 
 # Defining transaction table
 class Transaction(db.Model):

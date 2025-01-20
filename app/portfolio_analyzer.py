@@ -11,16 +11,15 @@ class PortfolioAnalyzer:
     def __init__(self, user_id):
         """
         Initialize the PortfolioAnalyzer for a specific user.
-
-        Args:
-            user_id (int): The ID of the user whose portfolio will be analyzed.
         """
         self.user_id = user_id
         self.transactions = self.get_user_transactions()
         self.portfolio_df = None
 
     def get_user_transactions(self):
-        """Fetch transactions for the user's portfolio using SQLAlchemy."""
+        """
+        Fetch transactions for the user's portfolio using SQLAlchemy.
+        """
         portfolio = Portfolio.query.filter_by(user_id=self.user_id).first()
 
         if not portfolio:
@@ -29,15 +28,15 @@ class PortfolioAnalyzer:
         return Transaction.query.filter_by(portfolio_id=portfolio.portfolio_id).all()
 
     def calculate_current_holdings(self):
-        """Calculate the user's portfolio value over time and current holdings based on value."""
+        """
+        Calculate the user's portfolio value over time and current holdings based on value.
+        """
         if not self.transactions:
             print("No transactions found for this user.")
             return pd.DataFrame(columns=["Portfolio Value"]), {}
 
-        # Extract unique stock tickers
         stock_tickers = list(set(t.stock_ticker for t in self.transactions))
 
-        # Fetch historical data for each stock
         historical_data = {}
         for stock_ticker in stock_tickers:
             stock_data = fetch_historical_data(stock_ticker)
@@ -86,7 +85,9 @@ class PortfolioAnalyzer:
         return self.portfolio_df, latest_values
 
     def plot_portfolio_performance(self, user_id):
-        """Plot the portfolio performance for the given user, including individual holdings."""
+        """
+        Plot the portfolio performance for the given user, including individual holdings.
+        """
 
         portfolio_df, _ = self.calculate_current_holdings()
 
