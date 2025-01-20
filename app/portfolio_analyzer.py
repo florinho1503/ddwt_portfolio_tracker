@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-from .data_fetching import fetch_historical_data, get_live_price
+from .data_fetching import fetch_historical_data
 import matplotlib.pyplot as plt
 import os
 from flask import current_app
