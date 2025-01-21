@@ -12,7 +12,7 @@ from .data_fetching import fetch_historical_data
 from flask import jsonify
 from flask_httpauth import HTTPBasicAuth
 from pycoingecko import CoinGeckoAPI
-import json
+
 
 
 cg = CoinGeckoAPI()
@@ -22,6 +22,7 @@ auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(username, password):
+    """Verifies a username/password combination for http basic authentication."""
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
         return user
@@ -240,9 +241,11 @@ def stockwatch():
 
 @app.route('/crypto', methods=['GET'])
 def crypto():
+    """Display information about 10 cryptocurrencies through the coingecko api"""
     crypto_ids = ['bitcoin', 'ethereum', 'cardano','ripple','solana','tether','binancecoin','dogecoin','usd-coin','staked-ether']
     crypto_data = cg.get_coins_markets(vs_currency='usd', ids=','.join(crypto_ids))
     return render_template('crypto.html', crypto_data=crypto_data)
+
 
 
 @app.route('/about')
