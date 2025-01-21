@@ -5,6 +5,7 @@ import sqlalchemy as sa
 from app import db
 from app.models import User
 
+
 # Registration Form also from tutorial
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -23,9 +24,10 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
+
 # Login form
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')  # Add this line for remember me functionality
+    remember_me = BooleanField('Remember Me')
     submit = SubmitField('Login')

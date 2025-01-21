@@ -7,6 +7,7 @@ body {
 @media screen and (max-width: 767.98px) {
     /* Responsiveness for screens with the size of a phone */
     /* Making sure the title has enough padding underneath */
+    /* We knew how making the website responsive because we also did that during the course Webtechnology, so we reused some of the code we wrote for that course in this project */
     .col-12{
         padding-bottom: 20px;
     }
@@ -83,9 +84,6 @@ body {
         width: 100%;
     }
 
-    .longreadtext img {
-        max-width: 200px;
-    }
 }
 
 @media screen and (min-width: 768px) and (max-width: 1100px) {
@@ -122,11 +120,6 @@ body {
         margin-bottom: 20px;
     }
 
-    .longreadtext img {
-        max-width: 200px;
-        height: auto;
-    }
-
 }
 
 @media (min-width: 768px) {
@@ -145,6 +138,8 @@ body {
         flex-wrap: wrap;
     }
 }
+
+/* We used some ChatGPT for the CSS, but we also used some css from former webtech projects. */
 
 .column {
     flex: 1 0 100%;
@@ -286,7 +281,7 @@ body {
 }
 
 .col-5 {
-    flex 0 1 calc(100% - 10px);
+    flex: 0 1 calc(100% - 10px);
     background-color: white;
     display: flex;
     margin-bottom: 20px;
@@ -371,7 +366,7 @@ body {
     overflow: hidden;
     white-space: nowrap;
 }
-/* CSS for the navigation bar */
+/* CSS for the navigation bar, did use ChatGPT for things like z-index */
 .navbar {
     flex: 0 1 calc(100% - 10px);
     position: relative;
@@ -485,16 +480,6 @@ ul.breadcrumb li a:hover {
     margin-right: 20px;
 }
 
-
-/* Links in the articles are lightblue without underlining */
-
-.heading-3 {
-    font-size: 20px;
-    text-transform: uppercase;
-    color: rgb(2, 47, 2);
-    margin-bottom: 10px;
-}
-
 /* Creating the footer */
 .footer {
     flex: 0 1 calc(100% - 10px);
@@ -522,11 +507,6 @@ ul.breadcrumb li a:hover {
 
 label {
     font-weight: bold;
-}
-
-.maps {
-    display: flex;
-    justify-content: center;
 }
 
 /* The form on the contact page */
@@ -601,25 +581,67 @@ input[type="submit"]:hover {
     font-weight: bold;
 }
 
-/* Blockquotes */
-
-blockquote {
-    font-family: 'Merriweather', serif;
-    font-weight: normal;
-    font-style: italic;
-    quotes: "“" "”";
-    padding: 10px;
-    border-left: 4px solid #ccc;
-    display: flex;
-    justify-content: center;
-    max-width: 78%;
-    margin: 0 auto;
+        /* Flash green for an increase */
+.flash-green {
+    animation: flash-green 1s ease-in-out;
+    color: #00b300; /* Bright green */
+    font-weight: bold;
 }
 
-blockquote p{
-    font-family: 'Merriweather', serif;
-    font-weight:bold;
-    font-style: normal;
-    margin: 0;
-    display: inline;
+/* Flash red for a decrease */
+.flash-red {
+    animation: flash-red 1s ease-in-out;
+    color: #ff0000; /* Bright red */
+    font-weight: bold;
 }
+
+.add-transaction-btn {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 10px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .add-transaction-btn:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+
+/* Animation keyframes for green flash */
+@keyframes flash-green {
+    0% { background-color: #e6ffe6; }
+    50% { background-color: #ccffcc; }
+    100% { background-color: transparent; }
+}
+
+/* Animation keyframes for red flash */
+@keyframes flash-red {
+    0% { background-color: #ffe6e6; }
+    50% { background-color: #ffcccc; }
+    100% { background-color: transparent; }
+}
+
+/* Default styling for the live value to make it stand out */
+.live-value {
+    font-size: 1.5em; /* Larger font size */
+    color: #333; /* Dark gray */
+    font-weight: bold;
+}
+
+#newTransactionRow td {
+        color: gray; /* Placeholder text color */
+        font-style: italic;
+    }
+
+    #newTransactionRow td:focus {
+        color: black; /* Change color when editing */
+        font-style: normal;
+    }
+

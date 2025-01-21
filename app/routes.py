@@ -12,13 +12,16 @@ from .data_fetching import fetch_historical_data
 from flask import jsonify
 from flask_httpauth import HTTPBasicAuth
 from pycoingecko import CoinGeckoAPI
+import json
+
 
 cg = CoinGeckoAPI()
 auth = HTTPBasicAuth()
 
+# For the login we basically just used the same login code that we used in assignment 2
+
 @auth.verify_password
 def verify_password(username, password):
-    """Verifies a username/password combination for http basic authentication."""
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
         return user
@@ -31,7 +34,9 @@ def index():
 @app.route('/live_value')
 @login_required
 def get_live_value():
-    """Return the latest live portfolio value."""
+    """
+    Return the latest live portfolio value.
+    """
     user_id = current_user.id
     analyzer = PortfolioAnalyzer(user_id)
 
@@ -47,7 +52,9 @@ def get_live_value():
 @app.route('/portfolio_tracker')
 @login_required
 def portfolio_tracker():
-    """Display the user's portfolio and performance."""
+    """
+    Display the user's portfolio and performance.
+    """
     user_id = current_user.id
     analyzer = PortfolioAnalyzer(user_id)
     transactions = []
@@ -79,7 +86,9 @@ def portfolio_tracker():
 @app.route('/submit_transaction', methods=['POST'])
 @login_required
 def submit_transaction():
-    """Submit a transaction for adding or editing."""
+    """
+    Submit a transaction for adding or editing.
+    """
     portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
     if not portfolio:
         portfolio = Portfolio(user_id=current_user.id, name='Default Portfolio')
@@ -145,7 +154,9 @@ def submit_transaction():
 @app.route('/delete_transaction', methods=['POST'])
 @login_required
 def delete_transaction():
-    """Delete a transaction."""
+    """
+    Delete a transaction.
+    """
     transaction_id = request.form['id']
     transaction = Transaction.query.get(transaction_id)
 
@@ -156,9 +167,12 @@ def delete_transaction():
     db.session.commit()
     return jsonify(success=True, message='Transaction deleted successfully!')
 
+# Login literally copied from our code of assignment 2.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Log in an existing user."""
+    """
+    Log in an existing user.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
@@ -174,21 +188,28 @@ def login():
 
 @app.before_request
 def enforce_foreign_keys():
-    """Ensure SQLite enforces foreign key constraints."""
+    """
+    Check that SQLite enforces foreign key constraints.
+    """
     if db.engine.dialect.name == "sqlite":
         db.session.execute(text('PRAGMA foreign_keys=ON;'))
 
-
+# Logging out
 @app.route('/logout')
 def logout():
-    """Log out the current user."""
+    """
+    Log out the user.
+    """
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
+# For registering we also used same method as in assignment now also working with your own portfolio
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Register a new user."""
+    """
+    Register a new user.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = RegistrationForm()
@@ -206,18 +227,19 @@ def register():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    """Custom 404 error handler."""
+    """
+    Custom 404 error handler.
+    """
     return render_template('404.html'), 404
+
 
 @app.route('/stockwatch')
 def stockwatch():
     return render_template('stockwatch.html')
 
 
-
 @app.route('/crypto', methods=['GET'])
 def crypto():
-    """Display information about 10 cryptocurrencies through the coingecko api"""
     crypto_ids = ['bitcoin', 'ethereum', 'cardano','ripple','solana','tether','binancecoin','dogecoin','usd-coin','staked-ether']
     crypto_data = cg.get_coins_markets(vs_currency='usd', ids=','.join(crypto_ids))
     return render_template('crypto.html', crypto_data=crypto_data)
@@ -227,10 +249,13 @@ def crypto():
 def about():
     return render_template('about.html')
 
+# API Endpoints
 @app.route('/api/portfolio', methods=['GET'])
 @auth.login_required
 def get_portfolio_summary():
-    """Fetch portfolio summary for api"""
+    """
+    Get user's portfolio summary.
+    """
     user = auth.current_user()
     portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
@@ -261,7 +286,9 @@ def get_portfolio_summary():
 @app.route('/api/portfolio/transactions', methods=['GET'])
 @auth.login_required
 def get_transactions():
-    """Fetch all transactions for api"""
+    """
+    Get all transactions from the database for the user.
+    """
     user = auth.current_user()
     portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
@@ -284,7 +311,9 @@ def get_transactions():
 @app.route('/api/portfolio/holdings', methods=['GET'])
 @auth.login_required
 def get_holdings():
-    """Fetch holdings and their ticker for api"""
+    """
+    Fetch holdings and their ticker symbol (e.g. AAPL: 12).
+    """
     user = auth.current_user()
     portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
@@ -304,7 +333,9 @@ def get_holdings():
 @app.route('/api/portfolio/transaction', methods=['POST'])
 @auth.login_required
 def add_transaction_api():
-    """Add a new transaction via API."""
+    """
+    Add a new transaction via API.
+    """
     user = auth.current_user()
     data = request.get_json()
     required_fields = ['stock_ticker', 'quantity', 'price', 'date', 'transaction_type']
