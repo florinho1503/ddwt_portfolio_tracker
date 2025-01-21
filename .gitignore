@@ -1,0 +1,4 @@
+static/**/*.png
+
+# Exclude PNG files from static/images i.e. article images.
+!static/images/*.png
