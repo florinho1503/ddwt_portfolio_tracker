@@ -281,7 +281,7 @@ body {
 }
 
 .col-5 {
-    flex 0 1 calc(100% - 10px);
+    flex: 0 1 calc(100% - 10px);
     background-color: white;
     display: flex;
     margin-bottom: 20px;
