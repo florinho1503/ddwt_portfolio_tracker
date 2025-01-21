@@ -12,14 +12,13 @@ from .data_fetching import fetch_historical_data
 from flask import jsonify
 from flask_httpauth import HTTPBasicAuth
 from pycoingecko import CoinGeckoAPI
-import json
-
 
 cg = CoinGeckoAPI()
 auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(username, password):
+    """Verifies a username/password combination for http basic authentication."""
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
         return user
@@ -218,6 +217,7 @@ def stockwatch():
 
 @app.route('/crypto', methods=['GET'])
 def crypto():
+    """Display information about 10 cryptocurrencies through the coingecko api"""
     crypto_ids = ['bitcoin', 'ethereum', 'cardano','ripple','solana','tether','binancecoin','dogecoin','usd-coin','staked-ether']
     crypto_data = cg.get_coins_markets(vs_currency='usd', ids=','.join(crypto_ids))
     return render_template('crypto.html', crypto_data=crypto_data)
@@ -227,11 +227,10 @@ def crypto():
 def about():
     return render_template('about.html')
 
-# API Endpoints
 @app.route('/api/portfolio', methods=['GET'])
 @auth.login_required
 def get_portfolio_summary():
-    """Fetch portfolio summary."""
+    """Fetch portfolio summary for api"""
     user = auth.current_user()
     portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
@@ -262,7 +261,7 @@ def get_portfolio_summary():
 @app.route('/api/portfolio/transactions', methods=['GET'])
 @auth.login_required
 def get_transactions():
-    """Fetch all transactions."""
+    """Fetch all transactions for api"""
     user = auth.current_user()
     portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
@@ -285,7 +284,7 @@ def get_transactions():
 @app.route('/api/portfolio/holdings', methods=['GET'])
 @auth.login_required
 def get_holdings():
-    """Fetch holdings and their ticker."""
+    """Fetch holdings and their ticker for api"""
     user = auth.current_user()
     portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     if not portfolio:
