@@ -22,3 +22,108 @@ or **edit** previous rows, simply by **clicking on one of the cells** in the tab
 its value and save the changes. 
 
 ![Portfolio](app/static/images/portfolio_example.png)
+
+
+# Portfolio Tracker API
+
+## Authentication:
+
+HTTP basic authentication is used in this api.
+Include username and password in your request as shown in the following request
+
+
+Replace 'http://127.0.0.1:5000' if the site is deployed on another URL
+
+
+**Example Request with Authentication**:
+```bash
+curl -u username:password http://127.0.0.1:5000/api/portfolio
+```
+
+---
+
+## Endpoints
+
+### 1. Getting a summary of your current portfolio
+
+- **URL:** `/api/portfolio`
+- **Method:** `GET`
+
+
+**Example Response:**
+```json
+{
+  "portfolio_id": 1,
+  "total_value": 12500.50,
+  "transaction_count": 4
+}
+```
+
+### 2. Viewing your transaction history
+
+- **URL:** `/api/portfolio/transactions`
+- **Method:** `GET`
+
+
+**Example Response:**
+```json
+[
+  {
+    "date": "2025-01-14",
+    "id": 36,
+    "price": 1500.0,
+    "quantity": 2.0,
+    "stock_ticker": "GOOG",
+    "transaction_type": "BUY"
+  },
+  {
+    "date": "2025-01-14",
+    "id": 37,
+    "price": 1500.0,
+    "quantity": 2.0,
+    "stock_ticker": "AAPL",
+    "transaction_type": "BUY"
+  },
+]
+```
+
+
+### 3. View current holdings
+
+- **URL:** `/api/portfolio/holdings`
+- **Method:** `GET`
+
+**Example Response:**
+```json
+{
+  "AAPL": 10,
+  "TSLA": 5
+}
+```
+
+
+### 4. Add a Transaction
+
+- **URL:** `/api/portfolio/transaction`
+- **Method:** `POST`
+
+
+**Example request:**
+```json
+{
+  "stock_ticker": "TSLA",
+  "quantity": 2,
+  "price": 1500.00,
+  "date": "2025-01-14",
+  "transaction_type": "BUY"
+}
+```
+
+
+
+
+
+
+
+
+
